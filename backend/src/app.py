@@ -13,14 +13,17 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-#generalized responses
+# generalized responses
+
+
 def success_response(body, code=200):
     return json.dumps(body), code
+
 
 def failure_response(message, code=404):
     return json.dumps({'error': message}), code
 
-#TODO: Routes
+# TODO: Routes
 
 
 if __name__ == "__main__":
