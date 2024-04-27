@@ -81,6 +81,7 @@ class Course(db.Model):
 
     # TODO make simple serialize to avoid infinite loops
 
+#This is testing if my GitHub works
 
 class Note(db.Model):
     """
