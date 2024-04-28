@@ -1,4 +1,4 @@
-from db import db
+from db import db, User, Course, Note
 from flask import Flask, request
 import json
 
@@ -24,24 +24,34 @@ def failure_response(message, code=404):
     return json.dumps({'error': message}), code
 
 # TODO: Routes
+
+
 @app.route("/")
 @app.route("/users/")
 def get_all_users():
     """
     Endpoint for getting all users
     """
-
     users = [user.serialize() for user in User.query.all()]
-    return success_response({"users":users})
+    return success_response({"users": users})
 
 
 @app.route("/users/", methods=["POST"])
 def create_a_user():
     """
     Endpoint for creating a new user
+    Returns 400 error response if:
+        - "name" or "profile_image" fields are missing
+        - "name" or "profile_image" values not strings
     """
     body = json.loads(request.data)
-    new_user = User(name = body.get("name"), profile_image = body.get("profile_image"))
+    name, profile_image = body.get("name"), body.get("profile_image")
+    # Data validation
+    if name is None or profile_image is None:
+        return failure_response("request body missing 'name' or 'profile_image' fields", 400)
+    if not isinstance(name, str) or not isinstance(profile_image, str):
+        return failure_response("'name' or 'profile_image' values not strings", 400)
+    new_user = User(name=name, profile_image=profile_image)
     db.session.add(new_user)
     db.session.commit()
     return success_response(new_user.serialize(), 201)
@@ -51,6 +61,7 @@ def create_a_user():
 def get_specific_user(user_id):
     """
     Endpoint for getting a task by id
+    Returns 404 error response if user with user_id not found
     """
     user = User.query.filter_by(id=user_id).first()
     if user is None:
@@ -62,14 +73,15 @@ def get_specific_user(user_id):
 def update_task(user_id):
     """
     Endpoint for updating a user by id
+    Returns 404 error response if user with user_id not found
     """
     body = json.loads(request.data)
     user = User.query.filter_by(id=user_id).first()
-
+    # Data validation
     if user is None:
         return failure_response("User not found!")
-    user.name = body.get("name", task.name)
-    user.profile_image = body.get("profile_image", task.profile_image)
+    user.name = body.get("name", user.name)
+    user.profile_image = body.get("profile_image", user.profile_image)
     db.session.commit()
     return success_response(user.serialize())
 
@@ -78,6 +90,7 @@ def update_task(user_id):
 def delete_user(user_id):
     """
     Endpoint for deleting a user by id
+    Returns 404 error response if user with user_id not found
     """
     user = User.query.filter_by(id=user_id).first()
     if user is None:
@@ -86,6 +99,34 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return success_response(user.serialize())
+
+
+@app.route("/courses/")
+def get_all_courses():
+    """
+    Endpoint for getting all courses
+    """
+    return success_response({"courses": [c.serialize() for c in Course.query.all()]})
+
+
+@app.route("/courses/", methods=["POST"])
+def create_course():
+    """
+    Endpoint for creating a course
+    """
+    pass
+
+
+@app.route("/course/<int:course_id>/")
+def get_course_by_id(course_id):
+    """
+    Endpoint for getting the course with 'course_id'
+    Returns 404 error response if course with 'course_id' not found
+    """
+    course = Course.query.filter_by(id=course_id).first()
+    if course is None:
+        return failure_response("Course with 'course_id' not found")
+    return success_response(course.serialize())
 
 
 if __name__ == "__main__":
