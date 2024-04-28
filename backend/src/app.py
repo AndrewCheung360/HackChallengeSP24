@@ -113,8 +113,22 @@ def get_all_courses():
 def create_course():
     """
     Endpoint for creating a course
+    Returns 400 error response if:
+        - "code", "name", or "description" fields are missing
+        - "code", "name" or "description" values are not strings
     """
-    pass
+    body = json.loads(request.data)
+    code, name, description = body.get("code"), body.get(
+        "name"), body.get("description")
+    # Data validation
+    if code is None or name is None or description is None:
+        return failure_response("request body missing 'code', 'name', or 'description' fields", 400)
+    if not isinstance(code, str) or not isinstance(name, str) or not isinstance(description, str):
+        return failure_response("'code', 'name', or 'description' value not of type string", 400)
+    new_course = Course(code=code, name=name, description=description)
+    db.session.add(new_course)
+    db.session.commit()
+    return success_response(new_course.serialize(), 201)
 
 
 @app.route("/course/<int:course_id>/")

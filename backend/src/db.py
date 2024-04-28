@@ -56,6 +56,7 @@ class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
     notes = db.relationship("Note", cascade="delete")
     students = db.relationship(
         "User", secondary=user_course_association_table, back_populates="courses")
@@ -66,6 +67,7 @@ class Course(db.Model):
         """
         self.code = kwargs.get("code")
         self.name = kwargs.get("name")
+        self.description = kwargs.get("description")
 
     def serialize(self):
         """
@@ -75,11 +77,13 @@ class Course(db.Model):
             "id": self.id,
             "code": self.code,
             "name": self.name,
+            "description": self.description,
             "notes": [n.serialize() for n in self.notes],
             "students": [s.serialize() for s in self.students]
         }
 
     # TODO make simple serialize to avoid infinite loops
+
 
 class Note(db.Model):
     """
