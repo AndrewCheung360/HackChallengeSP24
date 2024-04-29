@@ -38,9 +38,9 @@ class MainActivity : ComponentActivity() {
             val avatar = "https://pbs.twimg.com/profile_images/1699115602839764992/d3uthjYq_400x400.jpg"
 
             val navController = rememberNavController()
-            val viewModel = viewModel<SearchViewModel>()
-            val searchText by viewModel.searchText.collectAsState()
-            val courses by viewModel.course.collectAsState()
+            val searchViewModel = viewModel<SearchViewModel>()
+            val searchText by searchViewModel.searchText.collectAsState()
+            val courses by searchViewModel.course.collectAsState()
 
 
 
@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold (bottomBar = { BottomNavigationBar(navController)}){
 
-                    MainNavigation(navController, name, avatar)
+                    MainNavigation(navController, name, avatar, searchText, searchViewModel)
 
 
                 }
