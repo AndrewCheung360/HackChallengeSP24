@@ -1,5 +1,8 @@
 package com.example.scribe
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -10,13 +13,17 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.scribe.components.GreetingSection
+import com.example.scribe.components.MainScreen
 
 sealed class  BottomScreen(
     val route: String,
@@ -49,7 +56,7 @@ val screenList = listOf(
 )
 
 @Composable
-fun MainNavigation(navController: NavHostController) {
+fun MainNavigation(navController: NavHostController, name : String, avatar: String) {
 
 
     NavHost(
@@ -57,7 +64,7 @@ fun MainNavigation(navController: NavHostController) {
         startDestination = "home"
     ) {
         composable(BottomScreen.Home.route) {
-            Text("Home")
+            MainScreen(name = name, avatar = avatar)
         }
 
         composable(BottomScreen.Upload.route) {
