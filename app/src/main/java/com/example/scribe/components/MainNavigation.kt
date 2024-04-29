@@ -1,12 +1,18 @@
-package com.example.scribe
+package com.example.scribe.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -64,7 +70,40 @@ fun MainNavigation(navController: NavHostController, name : String, avatar: Stri
         startDestination = "home"
     ) {
         composable(BottomScreen.Home.route) {
+
             MainScreen(name = name, avatar = avatar)
+
+
+
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//            ) {
+//                TextField(
+//                    value = searchText,
+//                    onValueChange = viewModel::searchTextValue,
+//                    modifier = Modifier.fillMaxWidth(),
+//                    placeholder = { Text(text = "Search") }
+//                )
+//                Spacer(modifier = Modifier.height(12.dp))
+//                LazyColumn(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .weight(1f)
+//                ) {
+//                    items(courses) { course ->
+//                        Text(
+//                            text = course.courseName,
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(vertical = 6.dp)
+//                        )
+//
+//                    }
+//                }
+//
+//            }
+
         }
 
         composable(BottomScreen.Upload.route) {
