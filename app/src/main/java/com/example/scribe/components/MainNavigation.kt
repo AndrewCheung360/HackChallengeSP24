@@ -22,10 +22,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.scribe.components.GreetingSection
+import com.example.scribe.components.MainScreen
+import kotlinx.coroutines.flow.StateFlow
 
 sealed class  BottomScreen(
     val route: String,
@@ -58,7 +63,7 @@ val screenList = listOf(
 )
 
 @Composable
-fun MainNavigation(navController: NavHostController) {
+fun MainNavigation(navController: NavHostController, name : String, avatar: String, searchText: String, searchViewModel: SearchViewModel) {
 
 
     NavHost(
@@ -67,35 +72,8 @@ fun MainNavigation(navController: NavHostController) {
     ) {
         composable(BottomScreen.Home.route) {
 
+            MainScreen(name = name, avatar = avatar, searchText = searchText, searchViewModel = searchViewModel)
 
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//            ) {
-//                TextField(
-//                    value = searchText,
-//                    onValueChange = viewModel::searchTextValue,
-//                    modifier = Modifier.fillMaxWidth(),
-//                    placeholder = { Text(text = "Search") }
-//                )
-//                Spacer(modifier = Modifier.height(12.dp))
-//                LazyColumn(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .weight(1f)
-//                ) {
-//                    items(courses) { course ->
-//                        Text(
-//                            text = course.courseName,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(vertical = 6.dp)
-//                        )
-//
-//                    }
-//                }
-//
-//            }
 
         }
 
