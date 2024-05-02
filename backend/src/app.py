@@ -1,8 +1,11 @@
 from db import db, User, Course, Note
-from flask import Flask, request
+from flask import Flask, request, url_for, redirect, session
 import json
+from authlib.integrations.flask_client import OAuth
+import pyrebase
 
 app = Flask(__name__)
+
 db_filename = "notes.db"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s" % db_filename
@@ -27,6 +30,11 @@ def failure_response(message, code=404):
 
 
 @app.route("/")
+def hello_world():
+    email = dict(session).get('email', None)
+    return f'Hello {email}!'
+
+
 @app.route("/users/")
 def get_all_users():
     """
@@ -141,6 +149,28 @@ def get_course_by_id(course_id):
     if course is None:
         return failure_response("Course with 'course_id' not found")
     return success_response(course.serialize())
+
+# OAuth Login and Authorize Routes -------------------------------------------
+
+
+@app.route('/login/', methods=["POST"])
+def login():
+    body = json.loads(request.data)
+    email = body.get("email")
+    password = body.get("password")
+    try:
+        user = auth.sign_in_with_email_and_password(email, password)
+        session["user"] = email
+    except:
+        return failure_response("failed to login", 200)
+
+    return success_response({"email": email, "password": password})
+
+
+@app.route('/logout/')
+def logout():
+    session.pop("user")
+    return redirect('/')
 
 
 if __name__ == "__main__":
