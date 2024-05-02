@@ -54,7 +54,7 @@ class Course(db.Model):
     """
     __tablename__ = "course"
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String, nullable=False)
+    code = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     notes = db.relationship("Note", cascade="delete")
@@ -95,7 +95,7 @@ class Note(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey(
         "course.id"), nullable=False)
     poster_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    pdf_link = db.Column(db.String, nullable=False)
+    # pdf_link = db.Column(db.String, nullable=False)
 
     def __init__(self, **kwargs):
         """

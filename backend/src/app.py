@@ -1,5 +1,8 @@
 from db import db, User, Course, Note
-from flask import Flask, request
+from flask import Flask, request, redirect, send_file
+from s3_functions import upload_file, download_file
+from werkzeug.utils import secure_filename
+import os
 import json
 
 app = Flask(__name__)
@@ -8,6 +11,10 @@ db_filename = "notes.db"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s" % db_filename
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
+
+UPLOAD_FOLDER = "uploads"
+DOWNLOAD_FOLDER = "downloads"
+BUCKET = "hackchallengebucket"
 
 db.init_app(app)
 with app.app_context():
@@ -141,6 +148,46 @@ def get_course_by_id(course_id):
     if course is None:
         return failure_response("Course with 'course_id' not found")
     return success_response(course.serialize())
+
+@app.route("/upload/", methods=['POST'])
+def upload():
+    f = request.files['file']
+    body = json.loads(request.data)
+    title, course_id, poster_id = body.get("title"), body.get(
+        "course_id"), body.get("poster_id")
+    #check params
+    if title is None or course_id is None or poster_id is None:
+        return failure_response("request body missing 'title', 'course_id', or 'poster_id' fields", 400)
+    user = User.query.filter_by(id=poster_id).first()
+    if user is None:
+        return failure_response("Poster not found!")
+    course = Course.query.filter_by(id=course_id).first()
+    if course is None:
+        return failure_response("Course with 'course_id' not found")
+    #create new note
+    new_note = Note(title = title, course_id = course_id, poster_id = poster_id)
+    user.notes.append(new_note)
+    course.notes.append(new_note)
+    db.session.add(new_note)
+    db.session.commit()
+    #upload note to aws under the filename uploads/{note_id}.pdf
+    note_id = str(new_note.id) + ".pdf"
+    f.save(os.path.join(UPLOAD_FOLDER, note_id))
+    upload_file("uploads/{note_id}", BUCKET)
+    os.remove(os.path.join(UPLOAD_FOLDER, note_id))
+    return success_response(new_note.serialize())
+
+@app.route("/notes/<int:note_id>/")
+def get_note(note_id):
+    #dowload file from aws titled uploads/{note_id}.pdf
+    #file is saved as downloads/{note_id}.pdf
+    id_str =str(note_id) + ".pdf"
+    download_file("uploads/" + id_str, BUCKET, note_id)
+    file_path = os.path.join(DOWNLOAD_FOLDER, id_str)
+    if os.path.isfile(file_path):
+        return send_file(file_path, as_attachment=True)
+    else:
+        return failure_response("File not found")
 
 
 if __name__ == "__main__":
