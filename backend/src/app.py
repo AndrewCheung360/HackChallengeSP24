@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, url_for, redirect, session, send_file
 import json
 from authlib.integrations.flask_client import OAuth
-import pyrebase
+# import pyrebase
 
 app = Flask(__name__)
 
@@ -185,7 +185,7 @@ def upload():
     os.remove(os.path.join(UPLOAD_FOLDER, note_id))
     return success_response(new_note.serialize())
 
-@app.route("/notes/<int:note_id>/")
+@app.route("/notes/<int:note_id>/", methods=['GET'])
 def get_note(note_id):
     #dowload file from aws titled uploads/{note_id}.pdf
     #file is saved as downloads/{note_id}.pdf
