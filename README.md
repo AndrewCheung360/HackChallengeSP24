@@ -30,23 +30,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="https://github.com/AndrewCheung360/HackChallengeSP24/assets/67351739/bd1d5da6-452c-487f-a8e0-d05457850133" alt="Logo" width="120" height="120">
+  <a href="https://github.com/AndrewCheung360/Scribe">
+    <img src="https://github.com/AndrewCheung360/HackChallengeSP24/assets/67351739/bd1d5da6-452c-487f-a8e0-d05457850133" alt="Logo" width="200" height="200">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Scribe</h3>
 
   <p align="center">
     project_description
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/AndrewCheung360/Scribe"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/AndrewCheung360/Scribe">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/AndrewCheung360/Scribe/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/AndrewCheung360/Scribe/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -83,9 +83,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![image](https://github.com/AndrewCheung360/Scribe/assets/67351739/927951a2-3c59-44db-a367-cb9979ef9229)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+
+Scribe is a mobile application designed to evolutionize the way students share and access lecture notes and study guides. Whether you're looking to catch up on missed lectures or enhance your understanding with supplementary materials, Scribe has you covered. Join Scribe today and embark on a journey of collaborative learning and academic excellence!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -93,14 +94,10 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+* ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+* ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
+* ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -125,7 +122,7 @@ This is an example of how to list things you need to use the software and how to
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/AndrewCheung360/Scribe.git
    ```
 3. Install NPM packages
    ```sh
@@ -159,7 +156,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/AndrewCheung360/Scribe/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -197,7 +194,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/AndrewCheung360/Scribe](https://github.com/AndrewCheung360/Scribe)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -212,21 +209,19 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-![Group 2](https://github.com/AndrewCheung360/HackChallengeSP24/assets/67351739/bd1d5da6-452c-487f-a8e0-d05457850133)
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[Kotlin]: (https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+[contributors-shield]: https://img.shields.io/github/contributors/AndrewCheung360/Scribe.svg?style=for-the-badge
+[contributors-url]: https://github.com/AndrewCheung360/Scribe/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/AndrewCheung360/Scribe.svg?style=for-the-badge
+[forks-url]: https://github.com/AndrewCheung360/Scribe/network/members
+[stars-shield]: https://img.shields.io/github/stars/AndrewCheung360/Scribe.svg?style=for-the-badge
+[stars-url]: https://github.com/AndrewCheung360/Scribe/stargazers
+[issues-shield]: https://img.shields.io/github/issues/AndrewCheung360/Scribe.svg?style=for-the-badge
+[issues-url]: https://github.com/AndrewCheung360/Scribe/issues
+[license-shield]: https://img.shields.io/github/license/AndrewCheung360/Scribe.svg?style=for-the-badge
+[license-url]: https://github.com/AndrewCheung360/Scribe/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
