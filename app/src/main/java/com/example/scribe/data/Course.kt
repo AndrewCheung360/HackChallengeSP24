@@ -1,9 +1,10 @@
-package com.example.scribe.components
+package com.example.scribe.data
 
 import androidx.compose.ui.graphics.Brush
 
 
 data class Course(
+    val id: Int,
     val courseName: String,
     val code: String,
     val semester: String,
