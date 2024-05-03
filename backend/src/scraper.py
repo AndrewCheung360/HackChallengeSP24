@@ -91,5 +91,6 @@ def add_courses_to_db(course_list):
 # store_courses(course_list)
 
 # load courses
-# courses = serialize_courses(load_courses_from_file())
+courses = serialize_courses(load_courses_from_file())
+add_courses_to_db(courses)
 # print(courses)

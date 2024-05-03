@@ -122,7 +122,7 @@ def get_all_courses():
     return success_response({"courses": [c.serialize() for c in Course.query.all()]})
 
 
-@app.route("/courses/<int:course_id>/", methods=["POST"])
+@app.route("/courses/<int:course_id>/add/", methods=["POST"])
 def add_user_to_course(course_id):
     """
     Endpoint to add a user to a course
@@ -142,7 +142,38 @@ def add_user_to_course(course_id):
     course.students.append(user)
     user.courses.append(course)
     db.session.commit()
-    return success_response(course.serialize())
+    return success_response(user.serialize())
+
+
+@app.route("/courses/<int:course_id>/drop/", methods=["POST"])
+def drop_user_from_course(course_id):
+    """
+    Endpoint to add a user to a course
+    Returns 400 error response if:
+        - "user_id" field is missing
+    Returns 404 error response if:
+        - couse with "course_id" not found
+    """
+    body = json.loads(request.data)
+    user_id = body.get("user_id")
+    if user_id is None:
+        return failure_response("'user_id' field is missing", 400)
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return failure_response("user with 'user_id' not found")
+    course = Course.query.filter_by(id=course_id).first()
+    if course is None:
+        return failure_response("Course not found!")
+    serialized_user = user.serialize_non_recursive()
+    students = course.serialize().get("students")
+    if serialized_user not in students:
+        return failure_response("user has not been added to the course")
+    for i, s in enumerate(students):
+        if user_id in s.values():
+            course.students.pop(i)
+            db.session.commit()
+            return success_response(user.serialize())
+    return failure_response("unable to remove user from course (not supposed to happen)")
 
 
 @app.route("/courses/", methods=["POST"])
@@ -159,7 +190,7 @@ def create_course():
     # Data validation
     if code is None or name is None or description is None:
         return failure_response("request body missing 'code', 'name', or 'description' fields", 400)
-    if not isinstance(code, int) or not isinstance(name, str) or not isinstance(description, str):
+    if not isinstance(code, str) or not isinstance(name, str) or not isinstance(description, str):
         return failure_response("'code', 'name', or 'description' value not of type string", 400)
     new_course = Course(code=code, name=name, description=description)
     db.session.add(new_course)
@@ -176,6 +207,20 @@ def get_course_by_id(course_id):
     course = Course.query.filter_by(id=course_id).first()
     if course is None:
         return failure_response("Course with 'course_id' not found")
+    return success_response(course.serialize())
+
+
+@app.route("/courses/<int:course_id>/", methods=["DELETE"])
+def delete_course_by_id(course_id):
+    """
+    Endpoint for deleting the course with 'course_id'
+    Returns 404 error response if course with 'course_id' not found
+    """
+    course = Course.query.filter_by(id=course_id).first()
+    if course is None:
+        return failure_response("course not found")
+    db.session.delete(course)
+    db.session.commit()
     return success_response(course.serialize())
 
 
@@ -215,6 +260,26 @@ def upload():
     upload_file(path, BUCKET)
     os.remove(os.path.join(UPLOAD_FOLDER, note_id))
     return success_response(new_note.serialize(), 201)
+
+
+@app.route("/notes/")
+def get_all_notes():
+    """
+    Endpoint that gets all the notes in the database
+    """
+    return success_response({"notes": [n.serialize() for n in Note.query.all()]})
+
+
+@app.route("/notes/<int:course_id>/")
+def get_notes_in_course(course_id):
+    """
+    Endpoint that get all the notes that are uploaded in the course with 'course_id'
+    """
+    course = Course.query.filter_by(id=course_id).first()
+    # data validation
+    if course is None:
+        return failure_response("Course with 'course_id' not found")
+    return success_response({"notes": course.serialize().get("notes")})
 
 
 @app.route("/notes/<int:note_id>/", methods=['GET'])

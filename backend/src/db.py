@@ -44,7 +44,7 @@ class User(db.Model):
             "posted_notes": [n.serialize() for n in self.posted_notes],
             "courses": [c.serialize_non_recursive() for c in self.courses]
         }
-    
+
     def serialize_non_recursive(self):
         return {
             "id": self.id,
@@ -60,7 +60,7 @@ class Course(db.Model):
     """
     __tablename__ = "course"
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.Integer, nullable=False)
+    code = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     notes = db.relationship("Note", cascade="delete")
@@ -87,7 +87,7 @@ class Course(db.Model):
             "notes": [n.serialize() for n in self.notes],
             "students": [s.serialize_non_recursive() for s in self.students]
         }
-    
+
     def serialize_non_recursive(self):
         return {
             "id": self.id,
