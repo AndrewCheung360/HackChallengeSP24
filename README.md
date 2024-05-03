@@ -37,7 +37,7 @@
 <h3 align="center">Scribe</h3>
 
   <p align="center">
-    project_description
+    Collaborative note-sharing for student success.
     <br />
     <a href="https://github.com/AndrewCheung360/Scribe"><strong>Explore the docs »</strong></a>
     <br />
