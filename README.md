@@ -83,6 +83,27 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+# Scribe
+### Missed Class? Forgot to make a study guide? Don't Worry! Get notes for all your classes with Scribe!
+
+Cornell App Dev Hack Challenge Spring 2024
+
+# Description
+Scribe is an Android app that allows Cornell students to share and view notes that others have made for their classes. When users log into the app, they select the courses that they are taking. For each course, users can view the notes uploaded by other users taking the same course. Users can also upload their own notes to a class they're enrolled in. 
+
+# Screenshots
+
+# Key Features
+
+# Future Features
+1. **Comments and likes for notes**: Share your thoughts on others user's notes!
+2. **Starred Notes**: Save your favorite notes for later!
+3. **Note tags**: Sort your notes by lecture, prelim, study guide, etc
+4. **User Karma**: Discover who's the best note-taker!
+
+
+
+
 ![image](https://github.com/AndrewCheung360/Scribe/assets/67351739/927951a2-3c59-44db-a367-cb9979ef9229)
 
 
