@@ -2,3 +2,4 @@ venv/
 *.env
 src/downloads/
 src/uploads/
+src/instance/
