@@ -42,7 +42,13 @@ class User(db.Model):
             "name": self.name,
             "profile_image": self.profile_image,
             "posted_notes": [n.serialize() for n in self.posted_notes],
-            "courses": [c.serialize() for c in self.courses]
+            "courses": [c.serialize_non_recursive() for c in self.courses]
+        }
+    
+    def serialize_non_recursive(self):
+        return {
+            "id": self.id,
+            "name": self.name
         }
 
     # TODO make simple serialize to avoid infinite loops
@@ -79,7 +85,15 @@ class Course(db.Model):
             "name": self.name,
             "description": self.description,
             "notes": [n.serialize() for n in self.notes],
-            "students": [s.serialize() for s in self.students]
+            "students": [s.serialize_non_recursive() for s in self.students]
+        }
+    
+    def serialize_non_recursive(self):
+        return {
+            "id": self.id,
+            "code": self.code,
+            "name": self.name,
+            "description": self.description
         }
 
     # TODO make simple serialize to avoid infinite loops
@@ -95,7 +109,6 @@ class Note(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey(
         "course.id"), nullable=False)
     poster_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    # pdf_link = db.Column(db.String, nullable=False)
 
     def __init__(self, **kwargs):
         """
@@ -104,7 +117,6 @@ class Note(db.Model):
         self.title = kwargs.get("title")
         self.course_id = kwargs.get("course_id")
         self.poster_id = kwargs.get("poster_id")
-        self.pdf_link = kwargs.get("pdf_link")
 
     def serialize(self):
         """
@@ -113,9 +125,8 @@ class Note(db.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "course": Course.query.filter_by(id=self.course_id).first().serialize(),
-            "poster": User.query.filter_by(id=self.poster_id).first().serialize(),
-            "pdf_link": self.pdf_link
+            "course": Course.query.filter_by(id=self.course_id).first().serialize_non_recursive(),
+            "poster": User.query.filter_by(id=self.poster_id).first().serialize_non_recursive(),
         }
 
     # TODO make simple serialize to avoid infinite loops

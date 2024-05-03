@@ -138,7 +138,7 @@ def create_course():
     # Data validation
     if code is None or name is None or description is None:
         return failure_response("request body missing 'code', 'name', or 'description' fields", 400)
-    if not isinstance(code, str) or not isinstance(name, str) or not isinstance(description, str):
+    if not isinstance(code, int) or not isinstance(name, str) or not isinstance(description, str):
         return failure_response("'code', 'name', or 'description' value not of type string", 400)
     new_course = Course(code=code, name=name, description=description)
     db.session.add(new_course)
@@ -160,7 +160,7 @@ def get_course_by_id(course_id):
 @app.route("/upload/", methods=['POST'])
 def upload():
     f = request.files['file']
-    body = json.loads(request.data)
+    body = request.form
     title, course_id, poster_id = body.get("title"), body.get(
         "course_id"), body.get("poster_id")
     #check params
@@ -174,14 +174,15 @@ def upload():
         return failure_response("Course with 'course_id' not found")
     #create new note
     new_note = Note(title = title, course_id = course_id, poster_id = poster_id)
-    user.notes.append(new_note)
+    user.posted_notes.append(new_note)
     course.notes.append(new_note)
     db.session.add(new_note)
     db.session.commit()
     #upload note to aws under the filename uploads/{note_id}.pdf
     note_id = str(new_note.id) + ".pdf"
     f.save(os.path.join(UPLOAD_FOLDER, note_id))
-    upload_file("uploads/{note_id}", BUCKET)
+    path = "uploads/" + note_id
+    upload_file(path, BUCKET)
     os.remove(os.path.join(UPLOAD_FOLDER, note_id))
     return success_response(new_note.serialize())
 
