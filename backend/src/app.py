@@ -25,16 +25,20 @@ with app.app_context():
 
 # generalized responses
 
+
 def success_response(body, code=200):
     return json.dumps(body), code
 
+
 def failure_response(message, code=404):
     return json.dumps({'error': message}), code
+
 
 @app.route("/")
 def hello_world():
     email = dict(session).get('email', None)
     return f'Hello {email}!'
+
 
 @app.route("/users/")
 def get_all_users():
@@ -43,6 +47,7 @@ def get_all_users():
     """
     users = [user.serialize() for user in User.query.all()]
     return success_response({"users": users})
+
 
 @app.route("/users/", methods=["POST"])
 def create_a_user():
@@ -64,6 +69,7 @@ def create_a_user():
     db.session.commit()
     return success_response(new_user.serialize(), 201)
 
+
 @app.route("/user/<int:user_id>/")
 def get_specific_user(user_id):
     """
@@ -74,6 +80,7 @@ def get_specific_user(user_id):
     if user is None:
         return failure_response("User not found!")
     return success_response(user.serialize())
+
 
 @app.route("/users/<int:user_id>/", methods=["POST"])
 def update_task(user_id):
@@ -91,6 +98,7 @@ def update_task(user_id):
     db.session.commit()
     return success_response(user.serialize())
 
+
 @app.route("/users/<int:user_id>/", methods=["DELETE"])
 def delete_user(user_id):
     """
@@ -105,12 +113,14 @@ def delete_user(user_id):
     db.session.commit()
     return success_response(user.serialize())
 
+
 @app.route("/courses/")
 def get_all_courses():
     """
     Endpoint for getting all courses
     """
     return success_response({"courses": [c.serialize() for c in Course.query.all()]})
+
 
 @app.route("/courses/<int:course_id>/", methods=["POST"])
 def add_user_to_course(course_id):
@@ -134,6 +144,7 @@ def add_user_to_course(course_id):
     db.session.commit()
     return success_response(course.serialize())
 
+
 @app.route("/courses/", methods=["POST"])
 def create_course():
     """
@@ -155,6 +166,7 @@ def create_course():
     db.session.commit()
     return success_response(new_course.serialize(), 201)
 
+
 @app.route("/course/<int:course_id>/")
 def get_course_by_id(course_id):
     """
@@ -165,6 +177,7 @@ def get_course_by_id(course_id):
     if course is None:
         return failure_response("Course with 'course_id' not found")
     return success_response(course.serialize())
+
 
 @app.route("/upload/", methods=['POST'])
 def upload():
@@ -178,7 +191,7 @@ def upload():
     body = request.form
     title, course_id, poster_id = body.get("title"), body.get(
         "course_id"), body.get("poster_id")
-    #check params
+    # check params
     if title is None or course_id is None or poster_id is None:
         return failure_response("request body missing 'title', 'course_id', or 'poster_id' fields", 400)
     user = User.query.filter_by(id=poster_id).first()
@@ -189,13 +202,13 @@ def upload():
         return failure_response("Course with 'course_id' not found")
     if user not in course.students:
         return failure_response("Please add the user to the course before posting", 400)
-    #create new note
-    new_note = Note(title = title, course_id = course_id, poster_id = poster_id)
+    # create new note
+    new_note = Note(title=title, course_id=course_id, poster_id=poster_id)
     user.posted_notes.append(new_note)
     course.notes.append(new_note)
     db.session.add(new_note)
     db.session.commit()
-    #upload note to aws under the filename uploads/{note_id}.pdf
+    # upload note to aws under the filename uploads/{note_id}.pdf
     note_id = str(new_note.id) + ".pdf"
     f.save(os.path.join(UPLOAD_FOLDER, note_id))
     path = "uploads/" + note_id
@@ -203,41 +216,43 @@ def upload():
     os.remove(os.path.join(UPLOAD_FOLDER, note_id))
     return success_response(new_note.serialize(), 201)
 
+
 @app.route("/notes/<int:note_id>/", methods=['GET'])
 def get_note(note_id):
     """
     Endpoint to get a note by id
         - Returns 404 if note not found
     """
-    #dowload file from aws titled uploads/{note_id}.pdf
-    #file is saved as downloads/{note_id}.pdf
-    id_str =str(note_id) + ".pdf"
+    # dowload file from aws titled uploads/{note_id}.pdf
+    # file is saved as downloads/{note_id}.pdf
+    id_str = str(note_id) + ".pdf"
     download_file("uploads/" + id_str, BUCKET, note_id)
     file_path = os.path.join(DOWNLOAD_FOLDER, id_str)
     if os.path.isfile(file_path):
         return send_file(file_path, as_attachment=True)
     else:
         return failure_response("Note not found")
-    
+
 # OAuth Login and Authorize Routes -------------------------------------------
 
-@app.route('/login/', methods=["POST"])
-def login():
-    body = json.loads(request.data)
-    email = body.get("email")
-    password = body.get("password")
-    try:
-        user = auth.sign_in_with_email_and_password(email, password)
-        session["user"] = email
-    except:
-        return failure_response("failed to login", 200)
+# @app.route('/login/', methods=["POST"])
+# def login():
+#     body = json.loads(request.data)
+#     email = body.get("email")
+#     password = body.get("password")
+#     try:
+#         user = auth.sign_in_with_email_and_password(email, password)
+#         session["user"] = email
+#     except:
+#         return failure_response("failed to login", 200)
 
-    return success_response({"email": email, "password": password})
+#     return success_response({"email": email, "password": password})
 
-@app.route('/logout/')
-def logout():
-    session.pop("user")
-    return redirect('/')
+# @app.route('/logout/')
+# def logout():
+#     session.pop("user")
+#     return redirect('/')
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
