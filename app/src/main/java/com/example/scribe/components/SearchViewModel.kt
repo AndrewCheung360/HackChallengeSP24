@@ -25,14 +25,19 @@ class SearchViewModel: ViewModel() {
     val isSearching = _isSearching.asStateFlow()
 
     private val _course = MutableStateFlow(allCourse)
+
     val course = searchText
         .combine(_course) { text, course ->
             if(text.isBlank()) {
-                course
+                emptyCourse
             } else {
-                course.filter {
-                    it.doesSearchExist(text)
-                }
+                course.asSequence()
+                    .map { it to it.doesSearchExist(text) }
+                    .filter { it.second }
+                    .sortedByDescending { it.second }
+                    .take(5)
+                    .map {it.first}
+                    .toList()
             }
         }
         .stateIn(
@@ -49,19 +54,35 @@ class SearchViewModel: ViewModel() {
 }
 
 
+private val emptyCourse = emptyList<Course>(
+
+)
+
 
 
 private val allCourse = listOf(
     Course(
-        courseName = "Intro to Python", code = "CS 1110", semester = "Fall 2021", color = getGradient(PurpleStart, PurpleEnd)
+        courseName = "Intro to Python",
+        code = "CS 1110",
+        semester = "Fall 2021",
+        color = getGradient(PurpleStart, PurpleEnd)
     ),
     Course(
-        courseName = "Object-Oriented Programming", code = "CS 2110", semester = "Spring 2022", color = getGradient(BlueStart, BlueEnd)
+        courseName = "Object-Oriented Programming",
+        code = "CS 2110",
+        semester = "Spring 2022",
+        color = getGradient(BlueStart, BlueEnd)
     ),
     Course(
-        courseName = "Data Structures and Functional Programming", code = "CS 3110", semester = "Fall 2022", color = getGradient(OrangeStart, OrangeEnd)
+        courseName = "Data Structures and Functional Programming",
+        code = "CS 3110",
+        semester = "Fall 2022",
+        color = getGradient(OrangeStart, OrangeEnd)
     ),
     Course(
-        courseName = "Computer Organization", code = "CS 3410", semester = "Spring 2023", color = getGradient(GreenStart, GreenEnd)
+        courseName = "Computer Organization",
+        code = "CS 3410",
+        semester = "Spring 2023",
+        color = getGradient(GreenStart, GreenEnd)
     ),
 )

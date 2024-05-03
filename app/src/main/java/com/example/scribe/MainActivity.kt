@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold (bottomBar = { BottomNavigationBar(navController)}){
 
-                    MainNavigation(navController, name, avatar, searchText, searchViewModel)
+                    MainNavigation(navController, name, avatar, searchText, courses, searchViewModel)
 
 
                 }

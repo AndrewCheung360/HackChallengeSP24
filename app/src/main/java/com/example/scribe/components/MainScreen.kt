@@ -13,7 +13,12 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun MainScreen(name : String, avatar: String, searchText: String, searchViewModel: SearchViewModel){
+fun MainScreen(name : String,
+               avatar: String,
+               searchText: String,
+               courses: List<Course>,
+               searchViewModel: SearchViewModel)
+{
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp)) {
@@ -21,7 +26,7 @@ fun MainScreen(name : String, avatar: String, searchText: String, searchViewMode
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-        SearchBar(searchText = searchText, viewModel = searchViewModel)
+        SearchBar(searchText = searchText, courses = courses, viewModel = searchViewModel)
 
         Spacer(modifier = Modifier.padding(16.dp))
 

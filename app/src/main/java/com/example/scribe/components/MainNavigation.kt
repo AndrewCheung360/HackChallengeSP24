@@ -63,16 +63,19 @@ val screenList = listOf(
 )
 
 @Composable
-fun MainNavigation(navController: NavHostController, name : String, avatar: String, searchText: String, searchViewModel: SearchViewModel) {
-
-
+fun MainNavigation(navController: NavHostController,
+                   name : String, avatar: String,
+                   searchText: String,
+                   courses: List<Course>,
+                   searchViewModel: SearchViewModel)
+{
     NavHost(
         navController = navController,
         startDestination = "home"
     ) {
         composable(BottomScreen.Home.route) {
 
-            MainScreen(name = name, avatar = avatar, searchText = searchText, searchViewModel = searchViewModel)
+            MainScreen(name = name, avatar = avatar, searchText = searchText, courses = courses, searchViewModel = searchViewModel)
 
 
         }
