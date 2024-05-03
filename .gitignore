@@ -1,2 +1,4 @@
 venv/
-.env
+*.env
+src/downloads/
+src/uploads/
