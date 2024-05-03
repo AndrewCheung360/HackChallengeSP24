@@ -1,4 +1,4 @@
-package com.example.scribe.components
+package com.example.scribe.components.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -20,8 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
+import com.example.scribe.data.Course
 
 @Composable
 fun SearchBar(searchText: String, courses: List<Course>, viewModel: SearchViewModel) {

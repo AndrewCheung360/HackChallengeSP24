@@ -1,7 +1,8 @@
-package com.example.scribe.components
+package com.example.scribe.components.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scribe.data.Course
 import com.example.scribe.ui.theme.BlueEnd
 import com.example.scribe.ui.theme.BlueStart
 import com.example.scribe.ui.theme.GreenEnd
@@ -72,30 +73,27 @@ private val emptyCourse = emptyList<Course>(
 
 private val allCourse = listOf(
     Course(
-        courseName = "Intro to Python",
-        code = "CS 1110",
-        semester = "Fall 2021",
-        color = getGradient(PurpleStart, PurpleEnd)
+        id = 1, courseName = "Intro to Python", code = "CS 1110", semester = "Fall 2021", color = getGradient(
+            PurpleStart, PurpleEnd
+        )
     ),
     Course(
-        courseName = "Object-Oriented Programming",
-        code = "CS 2110",
-        semester = "Spring 2022",
-        color = getGradient(BlueStart, BlueEnd)
+        id = 2, courseName = "Object-Oriented Programming", code = "CS 2110", semester = "Spring 2022", color = getGradient(
+            BlueStart, BlueEnd
+        )
     ),
     Course(
-        courseName = "Data Structures and Functional Programming",
-        code = "CS 3110",
-        semester = "Fall 2022",
-        color = getGradient(OrangeStart, OrangeEnd)
+        id = 3, courseName = "Data Structures and Functional Programming", code = "CS 3110", semester = "Fall 2022", color = getGradient(
+            OrangeStart, OrangeEnd
+        )
     ),
     Course(
-        courseName = "Computer Organization",
-        code = "CS 3410",
-        semester = "Spring 2023",
-        color = getGradient(GreenStart, GreenEnd)
+        id = 4, courseName = "Computer Organization", code = "CS 3410", semester = "Spring 2023", color = getGradient(
+            GreenStart, GreenEnd
+        )
     ),
     Course(
+        id = 5,
         courseName = "algo",
         code = "CS 4820",
         semester = "Spring 2023",

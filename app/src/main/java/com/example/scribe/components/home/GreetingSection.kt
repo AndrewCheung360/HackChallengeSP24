@@ -1,4 +1,4 @@
-package com.example.scribe.components
+package com.example.scribe.components.home
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement

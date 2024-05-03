@@ -1,30 +1,27 @@
-package com.example.scribe.components
+package com.example.scribe.components.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.scribe.components.home.GreetingSection
-import com.example.scribe.components.home.SearchBar
-import com.example.scribe.components.home.SearchViewModel
 import com.example.scribe.data.Course
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun MainScreen(name : String,
                avatar: String,
                searchText: String,
-               courses: List<Course>,
+               courses: SnapshotStateList<Course>,
                searchViewModel: SearchViewModel,
                selectedCourse: (Int) -> Unit
 )
 {
+    val searchCourses by searchViewModel.course.collectAsState()
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp)) {
@@ -32,11 +29,11 @@ fun MainScreen(name : String,
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-        SearchBar(searchText = searchText, courses = courses, viewModel = searchViewModel)
+        SearchBar(searchText = searchText, courses = searchCourses, viewModel = searchViewModel)
 
-        Spacer(modifier = Modifier.padding(16.dp))
+//        Spacer(modifier = Modifier.padding(16.dp))
 
-        CourseCardsSection(viewModel = searchViewModel, selectedCourse = selectedCourse)
+        CourseCardsSection(selectedCourse = selectedCourse, courses = courses)
 
 
 

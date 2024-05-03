@@ -1,14 +1,17 @@
-package com.example.scribe.components
+package com.example.scribe.components.home
 
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.scribe.components.home.CourseCard
-import com.example.scribe.components.home.SearchViewModel
+import androidx.compose.ui.unit.dp
 import com.example.scribe.data.Course
 import com.example.scribe.ui.theme.BlueEnd
 import com.example.scribe.ui.theme.BlueStart
@@ -21,11 +24,11 @@ import com.example.scribe.ui.theme.PurpleStart
 
 
 @Composable
-fun CourseCardsSection(viewModel: SearchViewModel, selectedCourse: (Int) -> Unit) {
-    val courses by viewModel.displayCourses.collectAsState()
-    LazyRow{
+fun CourseCardsSection(selectedCourse: (Int) -> Unit, courses: SnapshotStateList<Course>){
+    LazyColumn(modifier = androidx.compose.ui.Modifier.fillMaxWidth().padding(8.dp).padding(bottom = 40.dp)){
         items(courses.size) { index ->
             CourseCard(courses[index], selectedCourse)
+            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
