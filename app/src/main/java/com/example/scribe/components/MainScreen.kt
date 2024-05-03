@@ -30,7 +30,7 @@ fun MainScreen(name : String,
 
         Spacer(modifier = Modifier.padding(16.dp))
 
-        CourseCardsSection()
+        CourseCardsSection(viewModel = searchViewModel)
 
 
 

@@ -26,6 +26,9 @@ class SearchViewModel: ViewModel() {
 
     private val _course = MutableStateFlow(allCourse)
 
+    private val _displayedCourses = MutableStateFlow<List<Course>>(emptyList())
+    val displayCourses = _displayedCourses.asStateFlow()
+
     val course = searchText
         .combine(_course) { text, course ->
             if(text.isBlank()) {
@@ -48,6 +51,13 @@ class SearchViewModel: ViewModel() {
 
     fun searchTextValue(text: String) {
         _searchText.value = text
+    }
+
+    fun addCourse(courseName: String) {
+        val course = allCourse.find { it.courseName == courseName }
+        if (course != null) {
+            _displayedCourses.value = _displayedCourses.value + course
+        }
     }
 
 
@@ -85,4 +95,10 @@ private val allCourse = listOf(
         semester = "Spring 2023",
         color = getGradient(GreenStart, GreenEnd)
     ),
+    Course(
+        courseName = "algo",
+        code = "CS 4820",
+        semester = "Spring 2023",
+        color = getGradient(GreenStart, GreenEnd)
+    )
 )

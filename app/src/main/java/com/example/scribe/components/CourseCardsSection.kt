@@ -2,6 +2,8 @@ package com.example.scribe.components
 
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,7 +18,8 @@ import com.example.scribe.ui.theme.PurpleStart
 
 
 @Composable
-fun CourseCardsSection() {
+fun CourseCardsSection(viewModel: SearchViewModel) {
+    val courses by viewModel.displayCourses.collectAsState()
     LazyRow{
         items(courses.size) { index ->
             CourseCard(index, courses)
@@ -26,16 +29,28 @@ fun CourseCardsSection() {
 
 val courses = listOf(
     Course(
-        courseName = "Intro to Python", code = "CS 1110", semester = "Fall 2021", color = getGradient(PurpleStart, PurpleEnd)
+        courseName = "Intro to Python",
+        code = "CS 1110",
+        semester = "Fall 2021",
+        color = getGradient(PurpleStart, PurpleEnd)
     ),
     Course(
-        courseName = "Object-Oriented Programming", code = "CS 2110", semester = "Spring 2022", color = getGradient(BlueStart, BlueEnd)
+        courseName = "Object-Oriented Programming",
+        code = "CS 2110",
+        semester = "Spring 2022",
+        color = getGradient(BlueStart, BlueEnd)
     ),
     Course(
-        courseName = "Data Structures and Functional Programming", code = "CS 3110", semester = "Fall 2022", color = getGradient(OrangeStart, OrangeEnd)
+        courseName = "Data Structures and Functional Programming",
+        code = "CS 3110",
+        semester = "Fall 2022",
+        color = getGradient(OrangeStart, OrangeEnd)
     ),
     Course(
-        courseName = "Computer Organization", code = "CS 3410", semester = "Spring 2023", color = getGradient(GreenStart, GreenEnd)
+        courseName = "Computer Organization",
+        code = "CS 3410",
+        semester = "Spring 2023",
+        color = getGradient(GreenStart, GreenEnd)
     ),
 )
 

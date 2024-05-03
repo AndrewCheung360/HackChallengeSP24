@@ -7,11 +7,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,6 +33,12 @@ fun SearchBar(searchText: String, courses: List<Course>, viewModel: SearchViewMo
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1
         )
+        FloatingActionButton(
+            onClick = { viewModel.addCourse(searchText) },
+            modifier = Modifier.align(Alignment.CenterEnd)
+        ) {
+            Icon(Icons.Filled.Add, contentDescription = "Add Course")
+        }
     }
     Spacer(modifier = Modifier.height(12.dp))
     LazyColumn(
@@ -34,12 +46,14 @@ fun SearchBar(searchText: String, courses: List<Course>, viewModel: SearchViewMo
             .fillMaxWidth()
     ) {
         items(courses) { course ->
-            Text(
-                text = course.courseName,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-            )
+            Button(onClick = { viewModel.searchTextValue(course.courseName) }) {
+                Text(
+                    text = course.courseName,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp)
+                )
+            }
 
         }
     }
