@@ -30,6 +30,7 @@ import com.example.scribe.viewmodel.MainViewModel
 @Composable
 fun ProfileScreen(viewModel: MainViewModel, onSignOut: () -> Unit) {
 
+
     val userNotes = remember {
         viewModel.userNotes.value
     }
@@ -100,6 +101,7 @@ fun ProfileScreen(viewModel: MainViewModel, onSignOut: () -> Unit) {
             }
 
         }
+
     }
 
 }

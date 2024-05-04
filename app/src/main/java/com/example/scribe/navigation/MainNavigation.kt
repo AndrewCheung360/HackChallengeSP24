@@ -83,7 +83,7 @@ fun MainNavigation(
 // remember to set start to "signin"
     NavHost(
         navController = navController,
-        startDestination = "sign_in"
+        startDestination = "home"
     ) {
 
 
@@ -109,10 +109,12 @@ fun MainNavigation(
 
         composable(BottomScreen.Upload.route) {
             val coroutineScope = rememberCoroutineScope()
-            val mimeTypeFilter = arrayOf("image/jpeg", "image/png", "image/gif", "image/jpg")
+            val mimeTypeFilter = arrayOf("image/jpeg", "image/png", "image/gif", "image/jpg", "application/pdf")
 
-            val selectProfileActivity = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) { /*...*/ }
-            val selectPhotoActivity = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenMultipleDocuments()) { /*...*/ }
+            val selectProfileActivity = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.OpenDocument()) { /*...*/ }
+            val selectPhotoActivity = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.OpenMultipleDocuments()) { /*...*/ }
 
             val profileImageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
             val photoImageBitmap = remember { mutableStateListOf<ImageBitmap>() }
@@ -121,6 +123,7 @@ fun MainNavigation(
             Scaffold (bottomBar = {
                 BottomNavigationBar(navController)
             }) {
+
                 FilePicker(
                     coroutineScope = coroutineScope,
                     mimeTypeFilter = mimeTypeFilter,
