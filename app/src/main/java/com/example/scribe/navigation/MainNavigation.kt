@@ -83,7 +83,7 @@ fun MainNavigation(
 // remember to set start to "signin"
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "sign_in"
     ) {
 
 
@@ -117,18 +117,18 @@ fun MainNavigation(
             val profileImageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
             val photoImageBitmap = remember { mutableStateListOf<ImageBitmap>() }
 
-            FilePicker(
-                coroutineScope = coroutineScope,
-                mimeTypeFilter = mimeTypeFilter,
-                selectProfileActivity = selectProfileActivity,
-                selectPhotoActivity = selectPhotoActivity,
-                profileImageBitmap = profileImageBitmap,
-                photoImageBitmap = photoImageBitmap
-            )
+
             Scaffold (bottomBar = {
                 BottomNavigationBar(navController)
             }) {
-                Text("Upload")
+                FilePicker(
+                    coroutineScope = coroutineScope,
+                    mimeTypeFilter = mimeTypeFilter,
+                    selectProfileActivity = selectProfileActivity,
+                    selectPhotoActivity = selectPhotoActivity,
+                    profileImageBitmap = profileImageBitmap,
+                    photoImageBitmap = photoImageBitmap
+                )
             }
         }
 
@@ -157,6 +157,26 @@ fun MainNavigation(
             }
 
         }
+        composable(
+            "courses/{courseId}/notes/{noteId}",
+            arguments = listOf(
+                navArgument("courseId") {
+                    type = NavType.IntType
+                },
+                navArgument("noteId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val arguments = requireNotNull(backStackEntry.arguments)
+            Scaffold (bottomBar = {
+                BottomNavigationBar(navController)
+            }) {
+                Text("Note ${arguments.getInt("noteId")} of course ${arguments.getInt("courseId")}")
+            }
+
+        }
+
     }
 }
 

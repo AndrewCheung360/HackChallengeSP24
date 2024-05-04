@@ -44,7 +44,7 @@ fun GreetingSection(name: String, avatar: String) {
             contentDescription = "Profile Picture",
             modifier = Modifier
                 .size(64.dp)
-                .clip(CircleShape).border(1.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
+                .clip(CircleShape)
         )
     }
 }

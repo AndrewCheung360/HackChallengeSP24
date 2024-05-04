@@ -48,6 +48,7 @@ import java.util.UUID
 
 class MainViewModel: ViewModel() {
 
+
     val supabase = createSupabaseClient(
         supabaseUrl = "https://bhmauikukhwzlmgohfxy.supabase.co",
         supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobWF1aWt1a2h3emxtZ29oZnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ4MDQ3NzEsImV4cCI6MjAzMDM4MDc3MX0.pEql7E_RAHwyfyvertCkGxOPm4XPZViuk8dN2ivKG3s"
@@ -58,6 +59,12 @@ class MainViewModel: ViewModel() {
 
     private val _user = MutableStateFlow<UserInfo?>(supabase.auth.currentUserOrNull())
     val user = _user.asStateFlow()
+
+    private val _userNotes = MutableStateFlow<List<Note>>(user_notes)
+    val userNotes = _userNotes.asStateFlow()
+
+    private val _starredNotes = MutableStateFlow<List<Note>>(starred_Notes)
+    val starredNotes = _starredNotes.asStateFlow()
 
     private val _name = MutableStateFlow("John Doe")
     val name = _name.asStateFlow()
@@ -72,7 +79,7 @@ class MainViewModel: ViewModel() {
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _userCourses = MutableStateFlow<List<Course>>(emptyList())
+    private val _userCourses = MutableStateFlow<List<Course>>(userStartingCourses)
     val userCourses = _userCourses.asStateFlow()
 
     private val _message = MutableStateFlow("")
@@ -208,7 +215,38 @@ class MainViewModel: ViewModel() {
     }
 
 }
-
+val user_notes = mutableListOf(
+    Note(
+        id = 1,
+        title = "Python Basics",
+        content = "Python is a high-level, interpreted programming language. It is known for its simplicity and readability. Python is a versatile language that can be used for web development, data analysis, artificial intelligence, and more.",
+        color = BabyBlue
+    ),
+    Note(
+        id = 2,
+        title = "Data Types",
+        content = "Python has several built-in data types, including integers, floats, strings, lists, tuples, and dictionaries. Each data type has its own set of operations and methods.",
+        color = RedOrange
+    ),
+    Note(
+        id = 3,
+        title = "Control Structures",
+        content = "Python supports several control structures, including if statements, for loops, while loops, and functions. These structures allow you to control the flow of your program and make decisions based on conditions.",
+        color = Violet
+    ),
+    Note(
+        id = 4,
+        title = "Functions",
+        content = "Functions are reusable blocks of code that perform a specific task. In Python, you can define your own functions using the def keyword. Functions can take parameters and return values.",
+        color = LightGreen
+    ),
+    Note(
+        id = 5,
+        title = "Modules",
+        content = "Modules are reusable pieces of code that can be imported into your program. Python has a large standard library that includes modules for common tasks, such as file I/O, networking, and math operations.",
+        color = RedPink
+    )
+)
 
 val allCourses = mutableStateListOf(
     Course(
@@ -320,7 +358,7 @@ val allCourses = mutableStateListOf(
         )
     ),
     Course(
-        id = 4, courseName = "Computer Organization", code = "CS 3410", semester = "Spring 2023", color = getGradient(
+        id = 4, courseName = "Computer System Organization and Programming", code = "CS 3410", semester = "Spring 2023", color = getGradient(
             GreenStart, GreenEnd
         ), notes = mutableListOf(
             Note(
@@ -512,3 +550,186 @@ val allCourses = mutableStateListOf(
         )
     ),
 )
+
+val userStartingCourses = mutableStateListOf(
+    Course(
+        id = 1, courseName = "Intro to Python", code = "CS 1110", semester = "Fall 2021", color = getGradient(
+            PurpleStart, PurpleEnd
+        ), notes = mutableListOf(
+            Note(
+                id = 1,
+                title = "Python Basics",
+                content = "Python is a high-level, interpreted programming language. It is known for its simplicity and readability. Python is a versatile language that can be used for web development, data analysis, artificial intelligence, and more.",
+                color = BabyBlue
+            ),
+            Note(
+                id = 2,
+                title = "Data Types",
+                content = "Python has several built-in data types, including integers, floats, strings, lists, tuples, and dictionaries. Each data type has its own set of operations and methods.",
+                color = RedOrange
+            ),
+            Note(
+                id = 3,
+                title = "Control Structures",
+                content = "Python supports several control structures, including if statements, for loops, while loops, and functions. These structures allow you to control the flow of your program and make decisions based on conditions.",
+                color = Violet
+            ),
+            Note(
+                id = 4,
+                title = "Functions",
+                content = "Functions are reusable blocks of code that perform a specific task. In Python, you can define your own functions using the def keyword. Functions can take parameters and return values.",
+                color = LightGreen
+            ),
+            Note(
+                id = 5,
+                title = "Modules",
+                content = "Modules are reusable pieces of code that can be imported into your program. Python has a large standard library that includes modules for common tasks, such as file I/O, networking, and math operations.",
+                color = RedPink
+            )
+        )
+    ),
+    Course(
+        id = 2, courseName = "Object-Oriented Programming", code = "CS 2110", semester = "Spring 2022", color = getGradient(
+            BlueStart, BlueEnd
+        ), notes = mutableListOf(
+            Note(
+                id = 1,
+                title = "Classes and Objects",
+                content = "Object-oriented programming is a programming paradigm that uses objects to model real-world entities. In Python, classes are used to define objects, which can have attributes and methods.",
+                color = BabyBlue
+            ),
+            Note(
+                id = 2,
+                title = "Inheritance",
+                content = "Inheritance is a mechanism that allows you to create a new class based on an existing class. The new class inherits the attributes and methods of the existing class and can add its own attributes and methods.",
+                color = RedOrange
+            ),
+            Note(
+                id = 3,
+                title = "Polymorphism",
+                content = "Polymorphism is the ability of an object to take on multiple forms. In Python, polymorphism is achieved through method overriding and method overloading.",
+                color = Violet
+            ),
+            Note(
+                id = 4,
+                title = "Encapsulation",
+                content = "Encapsulation is the bundling of data and methods that operate on that data into a single unit. In Python, encapsulation is achieved through classes and objects.",
+                color = LightGreen
+            ),
+            Note(
+                id = 5,
+                title = "Abstraction",
+                content = "Abstraction is the process of hiding the implementation details of an object and showing only the essential features. In Python, abstraction is achieved through abstract classes and interfaces.",
+                color = RedPink
+            )
+        )
+    ),
+    Course(
+        id = 4, courseName = "Computer System Organization and Programming", code = "CS 3410", semester = "Spring 2023", color = getGradient(
+            GreenStart, GreenEnd
+        ), notes = mutableListOf(
+            Note(
+                id = 1,
+                title = "Digital Logic",
+                content = "Digital logic is the foundation of computer systems and electronic devices. It involves the design and analysis of circuits that use binary signals to represent information.",
+                color = BabyBlue
+            ),
+            Note(
+                id = 2,
+                title = "Machine Language",
+                content = "Machine language is the lowest-level programming language that a computer can understand. It consists of binary code that is directly executed by the computer's hardware.",
+                color = RedOrange
+            ),
+            Note(
+                id = 3,
+                title = "Assembly Language",
+                content = "Assembly language is a low-level programming language that is closely related to machine language. It uses mnemonic codes to represent machine instructions and is easier for humans to read and write than machine code.",
+                color = Violet
+            ),
+            Note(
+                id = 4,
+                title = "Memory Hierarchy",
+                content = "The memory hierarchy is a system of storage devices that store data at different speeds and capacities. It includes registers, cache memory, main memory, and secondary storage.",
+                color = LightGreen
+            ),
+            Note(
+                id = 5,
+                title = "Input/Output",
+                content = "Input/output (I/O) is the process of transferring data between a computer and external devices, such as keyboards, monitors, and printers. I/O devices are connected to the computer through interfaces, such as USB and HDMI.",
+                color = RedPink
+            )
+        )
+    ),
+    Course(
+        id = 5,
+        courseName = "Introduction to Analysis of Algorithms",
+        code = "CS 4820",
+        semester = "Spring 2023",
+        color = getGradient(BlueStart, BlueEnd),
+        notes = mutableListOf(
+            Note(
+                id = 1,
+                title = "Algorithm Analysis",
+                content = "Algorithm analysis is the process of evaluating the efficiency of an algorithm in terms of time and space complexity. It involves analyzing the running time and memory usage of an algorithm as a function of the input size.",
+                color = BabyBlue
+            ),
+            Note(
+                id = 2,
+                title = "Divide and Conquer",
+                content = "Divide and conquer is a problem-solving technique that involves breaking a problem into smaller subproblems, solving the subproblems recursively, and combining the solutions to solve the original problem. It is used to solve problems that can be divided into independent subproblems.",
+                color = RedOrange
+            ),
+            Note(
+                id = 3,
+                title = "Dynamic Programming",
+                content = "Dynamic programming is a problem-solving technique that involves breaking a problem into smaller subproblems, solving the subproblems recursively, and storing the solutions in a table to avoid redundant computations. It is used to solve problems that have overlapping subproblems.",
+                color = Violet
+            ),
+            Note(
+                id = 4,
+                title = "Greedy Algorithms",
+                content = "Greedy algorithms are problem-solving techniques that make a series of choices that are locally optimal at each step, with the hope of finding a globally optimal solution. Greedy algorithms are used to solve optimization problems that can be solved by making a sequence of choices.",
+                color = LightGreen
+            ),
+            Note(
+                id = 5,
+                title = "Graph Algorithms",
+                content = "Graph algorithms are algorithms that operate on graphs, which are mathematical structures that represent relationships between pairs of objects. Graph algorithms are used to solve problems that involve networks, such as finding the shortest path between two nodes or detecting cycles in a graph.",
+                color = RedPink
+            )
+        )
+    ),)
+    val starred_Notes = mutableListOf(
+        Note(
+            id = 1,
+            title = "Algorithm Analysis",
+            content = "Algorithm analysis is the process of evaluating the efficiency of an algorithm in terms of time and space complexity. It involves analyzing the running time and memory usage of an algorithm as a function of the input size.",
+            color = BabyBlue
+        ),
+        Note(
+            id = 2,
+            title = "Divide and Conquer",
+            content = "Divide and conquer is a problem-solving technique that involves breaking a problem into smaller subproblems, solving the subproblems recursively, and combining the solutions to solve the original problem. It is used to solve problems that can be divided into independent subproblems.",
+            color = RedOrange
+        ),
+        Note(
+            id = 3,
+            title = "Dynamic Programming",
+            content = "Dynamic programming is a problem-solving technique that involves breaking a problem into smaller subproblems, solving the subproblems recursively, and storing the solutions in a table to avoid redundant computations. It is used to solve problems that have overlapping subproblems.",
+            color = Violet
+        ),
+        Note(
+            id = 4,
+            title = "Greedy Algorithms",
+            content = "Greedy algorithms are problem-solving techniques that make a series of choices that are locally optimal at each step, with the hope of finding a globally optimal solution. Greedy algorithms are used to solve optimization problems that can be solved by making a sequence of choices.",
+            color = LightGreen
+        ),
+        Note(
+            id = 5,
+            title = "Graph Algorithms",
+            content = "Graph algorithms are algorithms that operate on graphs, which are mathematical structures that represent relationships between pairs of objects. Graph algorithms are used to solve problems that involve networks, such as finding the shortest path between two nodes or detecting cycles in a graph.",
+            color = RedPink
+        )
+
+    )
+
