@@ -22,16 +22,16 @@ import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel: ViewModel() {
     //COURSES
-    private val courses = MutableStateFlow(all_courses)
+    private val _courses = MutableStateFlow(all_courses)
     //search bar instances
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
     val searchCourses = searchText
-            .combine(courses) { text, course ->
+            .combine(_courses) { text, course ->
             if(text.isBlank()) {
-                emptyCourse
+                emptyList()
             } else {
                 course.asSequence()
                     .map { it to it.doesSearchExist(text) }
@@ -45,7 +45,7 @@ class MainViewModel: ViewModel() {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            courses.value
+            _courses.value
         )
     //user courses instances
     private val _userCourses = MutableStateFlow<List<Course>>(emptyList())
@@ -56,13 +56,13 @@ class MainViewModel: ViewModel() {
     }
 
     fun getCourseList(): StateFlow<List<Course>> {
-        return courses
+        return _courses
     }
 
 
 
     fun addCourse(courseName: String) {
-        val course = courses.value.find { it.courseName == courseName }
+        val course = _courses.value.find { it.courseName == courseName }
         if (course != null) {
             _userCourses.value += course
         }
@@ -70,7 +70,7 @@ class MainViewModel: ViewModel() {
 
 }
 
-private val emptyCourse: List<Course> = emptyList<Course>()
+
 
 val all_courses = mutableStateListOf(
     Course(

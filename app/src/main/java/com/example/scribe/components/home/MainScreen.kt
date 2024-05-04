@@ -9,14 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.scribe.data.Course
 import com.example.scribe.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun MainScreen(
     name: String,
     avatar: String,
     searchText: String,
-    courses: StateFlow<List<Course>>,
+    courses: List<Course>,
     mainViewModel: MainViewModel,
     selectedCourse: (Int) -> Unit
 )

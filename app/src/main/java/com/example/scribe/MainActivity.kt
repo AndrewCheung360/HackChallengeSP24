@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val mainViewModel = viewModel<MainViewModel>()
             val searchText by mainViewModel.searchText.collectAsState()
-            val courses = mainViewModel.userCourses
+            val courses by mainViewModel.userCourses.collectAsState()
 
 
 

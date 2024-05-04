@@ -22,7 +22,6 @@ import com.example.scribe.components.course.CourseNotes
 import com.example.scribe.components.home.MainScreen
 import com.example.scribe.data.Course
 import com.example.scribe.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.StateFlow
 
 sealed class  BottomScreen(
     val route: String,
@@ -59,7 +58,7 @@ fun MainNavigation(
     navController: NavHostController,
     name: String, avatar: String,
     searchText: String,
-    courses: StateFlow<List<Course>>,
+    courses: List<Course>,
     mainViewModel: MainViewModel
 )
 {

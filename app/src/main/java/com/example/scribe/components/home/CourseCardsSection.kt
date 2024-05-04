@@ -12,14 +12,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scribe.data.Course
-import kotlinx.coroutines.flow.StateFlow
 
 
 @Composable
-fun CourseCardsSection(selectedCourse: (Int) -> Unit, courses: StateFlow<List<Course>>){
-    val userCourses = remember { courses.value }
+fun CourseCardsSection(selectedCourse: (Int) -> Unit, courses: List<Course>){
+    val userCourses = remember { courses }
     LazyColumn(modifier = androidx.compose.ui.Modifier.fillMaxWidth().padding(8.dp).padding(bottom = 40.dp)){
-        items(courses.value.size) { index ->
+        items(courses.size) { index ->
             CourseCard(userCourses[index], selectedCourse)
             Spacer(modifier = Modifier.height(4.dp))
         }
