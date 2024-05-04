@@ -59,7 +59,7 @@ fun MainNavigation(
     navController: NavHostController,
     name: String, avatar: String,
     searchText: String,
-    courses: StateFlow<List<Course>>,
+    courses: List<Course>,
     mainViewModel: MainViewModel
 )
 {
