@@ -1,8 +1,9 @@
-package com.example.scribe
+package com.example.scribe.navigation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
+import android.annotation.SuppressLint
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -25,11 +27,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.scribe.FilePicker
+import com.example.scribe.components.auth.SignInScreen
 import com.example.scribe.components.course.CourseNotes
 import com.example.scribe.components.home.MainScreen
-import com.example.scribe.data.Course
+import com.example.scribe.models.Course
 import com.example.scribe.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.StateFlow
+import com.example.scribe.components.profile.ProfileScreen
+import io.github.jan.supabase.SupabaseClient
+
 
 sealed class  BottomScreen(
     val route: String,
@@ -62,26 +68,42 @@ val screenList = listOf(
 )
 
 @OptIn(ExperimentalFoundationApi::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainNavigation(
     navController: NavHostController,
     name: String, avatar: String,
     searchText: String,
     courses: List<Course>,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    supabase: SupabaseClient
 )
 {
     val actions = remember(navController) { AppActions(navController) }
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "sign_in"
     ) {
 
+
+        composable("sign_in"){
+            SignInScreen(viewModel = mainViewModel, actions.toHome)
+        }
+
         composable(BottomScreen.Home.route) {
-
-            MainScreen(name = name, avatar = avatar, searchText = searchText, courses = courses, mainViewModel = mainViewModel, selectedCourse = actions.selectedCourse)
-
+            Scaffold (bottomBar = {
+                BottomNavigationBar(navController)
+             }) {
+                MainScreen(
+                    name = name,
+                    avatar = avatar,
+                    searchText = searchText,
+                    courses = courses,
+                    mainViewModel = mainViewModel,
+                    selectedCourse = actions.selectedCourse
+                )
+            }
 
         }
 
@@ -103,10 +125,19 @@ fun MainNavigation(
                 profileImageBitmap = profileImageBitmap,
                 photoImageBitmap = photoImageBitmap
             )
+            Scaffold (bottomBar = {
+                BottomNavigationBar(navController)
+            }) {
+                Text("Upload")
+            }
         }
 
         composable(BottomScreen.Profile.route) {
-
+            Scaffold (bottomBar = {
+                BottomNavigationBar(navController)
+            }) {
+                ProfileScreen(viewModel = mainViewModel, actions.toSignIn)
+            }
         }
 
         composable(
@@ -149,6 +180,14 @@ private class AppActions(
 ) {
     val selectedCourse: (Int) -> Unit = { courseId: Int ->
         navController.navigate("courses/$courseId")
+    }
+
+    val toHome : () -> Unit = {
+        navController.navigate(BottomScreen.Home.route)
+    }
+
+    val toSignIn : () -> Unit = {
+        navController.navigate("sign_in")
     }
     val backToHome: () -> Unit = {
         navController.navigate(BottomScreen.Home.route) {

@@ -1,10 +1,17 @@
 package com.example.scribe.viewmodel
 
+import android.content.ContentValues
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scribe.components.home.getGradient
-import com.example.scribe.data.Course
+import com.example.scribe.models.Course
 import com.example.scribe.ui.theme.BlueEnd
 import com.example.scribe.ui.theme.BlueStart
 import com.example.scribe.ui.theme.GreenEnd
@@ -13,14 +20,44 @@ import com.example.scribe.ui.theme.OrangeEnd
 import com.example.scribe.ui.theme.OrangeStart
 import com.example.scribe.ui.theme.PurpleEnd
 import com.example.scribe.ui.theme.PurpleStart
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.gotrue.Auth
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.Google
+import io.github.jan.supabase.gotrue.providers.builtin.IDToken
+import io.github.jan.supabase.gotrue.user.UserInfo
+import io.github.jan.supabase.postgrest.Postgrest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.util.UUID
+
 
 class MainViewModel: ViewModel() {
+
+    val supabase = createSupabaseClient(
+        supabaseUrl = "https://bhmauikukhwzlmgohfxy.supabase.co",
+        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobWF1aWt1a2h3emxtZ29oZnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQ4MDQ3NzEsImV4cCI6MjAzMDM4MDc3MX0.pEql7E_RAHwyfyvertCkGxOPm4XPZViuk8dN2ivKG3s"
+    ){
+        install(Auth)
+        install(Postgrest)
+    }
+
+    private val _user = MutableStateFlow<UserInfo?>(supabase.auth.currentUserOrNull())
+    val user = _user.asStateFlow()
+
+    private val _name = MutableStateFlow("John Doe")
+    val name = _name.asStateFlow()
+
+    private val _avatar = MutableStateFlow("https://pbs.twimg.com/profile_images/1699115602839764992/d3uthjYq_400x400.jpg")
+    val avatar = _avatar.asStateFlow()
 
     //search bar instances
     private val _searchText = MutableStateFlow("")
@@ -39,7 +76,7 @@ class MainViewModel: ViewModel() {
     val searchCourses = searchText
             .combine(courses) { text, course ->
             if(text.isBlank()) {
-                emptyCourse
+                emptyList()
             } else {
                 course.asSequence()
                     .map { it to it.doesSearchExist(text) }
@@ -77,11 +114,74 @@ class MainViewModel: ViewModel() {
         }
     }
 
+    fun updateNameAvatar(name: String?, avatar: String?){
+        _name.value = name ?: "John Doe"
+        _avatar.value = avatar ?: "https://pbs.twimg.com/profile_images/1699115602839764992/d3uthjYq_400x400.jpg"
+    }
+
+    fun signIn(context: Context, coroutineScope: CoroutineScope, onSignedIn: () -> Unit){
+        val credentialManager = CredentialManager.create(context)
+        val rawNonce = UUID.randomUUID().toString()
+        val bytes = rawNonce.toByteArray()
+        val md = java.security.MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        val hashedNonce = digest.fold("") { str, it -> str + "%02x".format(it) }
+
+        val googleIdOption : GetGoogleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(
+                "462358544142-v1honrm2ggc03r5umi7aehkdh5snm8c4.apps.googleusercontent.com")
+            .setNonce(hashedNonce)
+            .build()
+
+        val request : GetCredentialRequest = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        coroutineScope.launch {
+            try{
+                val result = credentialManager.getCredential(
+                    request = request,
+                    context = context
+                )
+                val credential = result.credential
+
+                val googleIdTokenCredential = GoogleIdTokenCredential
+                    .createFrom(credential.data)
+
+                val googleIdToken = googleIdTokenCredential.idToken
+
+                supabase.auth.signInWith(IDToken){
+                    idToken = googleIdToken
+                    provider = Google
+                    nonce = rawNonce
+                }
+
+                Log.i(ContentValues.TAG, googleIdToken)
+                _user.value = supabase.auth.currentUserOrNull()
+                Log.i(ContentValues.TAG, _user.value?.userMetadata.toString())
+                updateNameAvatar(_user.value?.userMetadata?.get("name").toString().replace("\"", ""), _user.value?.userMetadata?.get("picture").toString().replace("\"", ""))
+                onSignedIn()
+                Toast.makeText(context, "You are signed in!", Toast.LENGTH_SHORT).show()
+            }catch(e : GetCredentialException){
+                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                Log.e(ContentValues.TAG, e.message, e)
+            }catch(e : Exception){
+                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                Log.e(ContentValues.TAG, e.message, e)
+            }
+
+        }
+    }
+    fun signOut(coroutineScope: CoroutineScope, onSignOut: () -> Unit){
+        coroutineScope.launch {
+            supabase.auth.signOut()
+            onSignOut()
+        }
+    }
+
 }
 
-private val emptyCourse = emptyList<Course>(
-
-)
 
 val allCourses = mutableStateListOf(
     Course(

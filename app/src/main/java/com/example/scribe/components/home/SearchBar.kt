@@ -22,7 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.scribe.data.Course
+import com.example.scribe.models.Course
 import com.example.scribe.viewmodel.MainViewModel
 import kotlinx.coroutines.flow.StateFlow
 import androidx.compose.foundation.layout.BoxScope

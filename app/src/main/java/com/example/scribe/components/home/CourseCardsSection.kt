@@ -8,15 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import com.example.scribe.data.Course
+
 import com.example.scribe.viewmodel.MainViewModel
-import kotlinx.coroutines.flow.StateFlow
 
 
 @Composable
@@ -38,6 +35,7 @@ fun CourseCardsSection(selectedCourse: (Int) -> Unit, viewModel: MainViewModel){
         .padding(bottom = 40.dp)){
         items(courses.size) { index ->
             CourseCard(courses[index], selectedCourse)
+
             Spacer(modifier = Modifier.height(4.dp))
         }
     }
