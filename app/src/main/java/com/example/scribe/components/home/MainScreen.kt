@@ -27,11 +27,11 @@ fun MainScreen(
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-        SearchBar(searchText = searchText, viewModel = mainViewModel)
+        SearchBar(searchText = searchText, courses = courses, viewModel = mainViewModel)
 
 //        Spacer(modifier = Modifier.padding(16.dp))
 
-        CourseCardsSection(selectedCourse = selectedCourse, courses = courses)
+        CourseCardsSection(selectedCourse = selectedCourse, viewModel = mainViewModel)
 
 
 

@@ -21,15 +21,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel: ViewModel() {
-    //COURSES
-    private val _courses = MutableStateFlow(all_courses)
+
     //search bar instances
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
+
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
+
+    private val _userCourses = MutableStateFlow<List<Course>>(emptyList())
+    val userCourses = _userCourses.asStateFlow()
+
+    private val courses = MutableStateFlow(allCourses)
     val searchCourses = searchText
-            .combine(_courses) { text, course ->
+            .combine(courses) { text, course ->
             if(text.isBlank()) {
                 emptyList()
             } else {
@@ -45,24 +50,20 @@ class MainViewModel: ViewModel() {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _courses.value
+            courses.value
         )
-    //user courses instances
-    private val _userCourses = MutableStateFlow<List<Course>>(emptyList())
-    val userCourses = _userCourses.asStateFlow()
+
 
     fun searchTextValue(text: String) {
         _searchText.value = text
     }
 
     fun getCourseList(): StateFlow<List<Course>> {
-        return _courses
+        return courses
     }
 
-
-
     fun addCourse(courseName: String) {
-        val course = _courses.value.find { it.courseName == courseName }
+        val course = courses.value.find { it.courseName == courseName }
         if (course != null) {
             _userCourses.value += course
         }
@@ -71,8 +72,7 @@ class MainViewModel: ViewModel() {
 }
 
 
-
-val all_courses = mutableStateListOf(
+val allCourses = mutableStateListOf(
     Course(
         id = 1, courseName = "Intro to Python", code = "CS 1110", semester = "Fall 2021", color = getGradient(
             PurpleStart, PurpleEnd

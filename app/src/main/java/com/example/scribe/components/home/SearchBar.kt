@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -23,7 +24,7 @@ import com.example.scribe.viewmodel.MainViewModel
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun SearchBar(searchText: String, viewModel: MainViewModel) {
+fun SearchBar(searchText: String, courses: List<Course>, viewModel: MainViewModel) {
     val searchCourses = remember { viewModel.searchCourses.value }
     Box(modifier = Modifier.fillMaxWidth()) {
         TextField(
@@ -45,8 +46,7 @@ fun SearchBar(searchText: String, viewModel: MainViewModel) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        items(searchCourses.size) { index ->
-            val course = searchCourses[index]
+        items(courses) { course ->
             Button(onClick = { viewModel.searchTextValue(course.courseName) }) {
                 Text(
                     text = course.courseName,
