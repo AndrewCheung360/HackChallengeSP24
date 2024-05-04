@@ -39,6 +39,8 @@ def hello_world():
     email = dict(session).get('email', None)
     return f'Hello {email}!'
 
+# Users routes ---------------------------------------------------------------
+
 
 @app.route("/users/")
 def get_all_users():
@@ -54,26 +56,32 @@ def create_a_user():
     """
     Endpoint for creating a new user
     Returns 400 error response if:
-        - "name" or "profile_image" fields are missing
-        - "name" or "profile_image" values not strings
+        - "name" or "firebase_id" fields are missing
+        - "name" or "firebase_id" values not strings
     """
     body = json.loads(request.data)
-    name, profile_image = body.get("name"), body.get("profile_image")
+    name, profile_image, firebase_id, email,  = body.get("name"), body.get(
+        "profile_image"), body.get("firebase_id"), body.get("email")
     # Data validation
-    if name is None or profile_image is None:
-        return failure_response("request body missing 'name' or 'profile_image' fields", 400)
-    if not isinstance(name, str) or not isinstance(profile_image, str):
-        return failure_response("'name' or 'profile_image' values not strings", 400)
-    new_user = User(name=name, profile_image=profile_image)
+    if name is None or firebase_id is None:
+        return failure_response("request body missing 'name' or 'firebase_id' fields", 400)
+    if not isinstance(name, str) or not isinstance(firebase_id, str):
+        return failure_response("'name' or 'firebase_id' values not strings", 400)
+    # check if user already in firebase
+    user = User.query.filter_by(firebase_id=firebase_id).first()
+    if user is not None:
+        return success_response({"Alert": "user with 'firebase_id' already in database"})
+    new_user = User(name=name, profile_image=profile_image,
+                    firebase_id=firebase_id, email=email)
     db.session.add(new_user)
     db.session.commit()
     return success_response(new_user.serialize(), 201)
 
 
-@app.route("/user/<int:user_id>/")
+@app.route("/users/<int:user_id>/")
 def get_specific_user(user_id):
     """
-    Endpoint for getting a task by id
+    Endpoint for getting a user by id
     Returns 404 error response if user with user_id not found
     """
     user = User.query.filter_by(id=user_id).first()
@@ -82,8 +90,29 @@ def get_specific_user(user_id):
     return success_response(user.serialize())
 
 
+@app.route("/users/firebase/", methods=["POST"])
+def get_user_by_firebase_id():
+    """
+    Endpoint for getting a user by their firebase id
+    Returns 400 error response if:
+        - 'firebase_id' field missing from request body
+        - 'firebase_id' value is not string
+    Returs 404 error response if user with 'firebase_id' not found
+    """
+    body = json.loads(request.data)
+    firebase_id = body.get("firebase_id")
+    if firebase_id is None:
+        return failure_response("'firebase_id' field missing from request body")
+    if not isinstance(firebase_id, str):
+        return failure_response("'firebase_id' value must be string")
+    user = User.query.filter_by(firebase_id=firebase_id).first()
+    if user is None:
+        return failure_response("User not found")
+    return success_response(user.serialize())
+
+
 @app.route("/users/<int:user_id>/", methods=["POST"])
-def update_task(user_id):
+def update_user(user_id):
     """
     Endpoint for updating a user by id
     Returns 404 error response if user with user_id not found
@@ -96,7 +125,7 @@ def update_task(user_id):
     user.name = body.get("name", user.name)
     user.profile_image = body.get("profile_image", user.profile_image)
     db.session.commit()
-    return success_response(user.serialize())
+    return success_response(user.serialize_non_recursive())
 
 
 @app.route("/users/<int:user_id>/", methods=["DELETE"])
@@ -112,6 +141,8 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return success_response(user.serialize())
+
+# Course routes ---------------------------------------------------------------
 
 
 @app.route("/courses/")
@@ -140,7 +171,7 @@ def add_user_to_course(course_id):
     if course is None:
         return failure_response("Course not found!")
     course.students.append(user)
-    user.courses.append(course)
+    # user.courses.append(course)
     db.session.commit()
     return success_response(user.serialize())
 
@@ -198,7 +229,7 @@ def create_course():
     return success_response(new_course.serialize(), 201)
 
 
-@app.route("/course/<int:course_id>/")
+@app.route("/courses/<int:course_id>/")
 def get_course_by_id(course_id):
     """
     Endpoint for getting the course with 'course_id'
@@ -222,6 +253,8 @@ def delete_course_by_id(course_id):
     db.session.delete(course)
     db.session.commit()
     return success_response(course.serialize())
+
+# Notes routes ---------------------------------------------------------------
 
 
 @app.route("/upload/", methods=['POST'])
@@ -270,7 +303,7 @@ def get_all_notes():
     return success_response({"notes": [n.serialize() for n in Note.query.all()]})
 
 
-@app.route("/notes/<int:course_id>/")
+@app.route("/notes/course/<int:course_id>/")
 def get_notes_in_course(course_id):
     """
     Endpoint that get all the notes that are uploaded in the course with 'course_id'
@@ -297,6 +330,18 @@ def get_note(note_id):
         return send_file(file_path, as_attachment=True)
     else:
         return failure_response("Note not found")
+
+
+@app.route("/notes/json/<int:note_id>/")
+def get_note_json(note_id):
+    """
+    Endpoint that returns the json version of the note with 'note_id'
+        - Returns 404 error if note not found
+    """
+    note = Note.query.filter_by(id=note_id).first()
+    if note is None:
+        return failure_response("note not found!")
+    return success_response(note.serialize())
 
 # OAuth Login and Authorize Routes -------------------------------------------
 

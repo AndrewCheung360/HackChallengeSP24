@@ -76,8 +76,10 @@ def add_courses_to_db(course_list):
     Requires courses to be in serialized using serialize_courses.
     ONLY RUN ONCE TO PREVENT COURSES TABLE FROM HAVING DUPLICATE COURSES
     """
+    local_host = "http://127.0.0.1:8000"
+    deployed_route = "http://34.48.67.43"
     for c in course_list:
-        r = requests.post("http://127.0.0.1:8000/courses/",
+        r = requests.post(local_host+"/courses/",
                           data=json.dumps({
                               "code": c["code"],
                               "name": c["name"],

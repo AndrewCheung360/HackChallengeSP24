@@ -18,10 +18,11 @@ class User(db.Model):
     User class
     """
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
-    profile_image = db.Column(
-        db.String, nullable=False)  # URL to profile image
+    profile_image = db.Column(db.String, nullable=True)  # URL to profile image
+    firebase_id = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=True)
     posted_notes = db.relationship("Note", cascade="delete")
     courses = db.relationship(
         "Course", secondary=user_course_association_table, back_populates="students")
@@ -32,6 +33,8 @@ class User(db.Model):
         """
         self.name = kwargs.get("name")
         self.profile_image = kwargs.get("profile_image")
+        self.firebase_id = kwargs.get("firebase_id")
+        self.email = kwargs.get("email")
 
     def serialize(self):
         """
@@ -41,6 +44,8 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "profile_image": self.profile_image,
+            "firebase_id": self.firebase_id,
+            "email": self.email,
             "posted_notes": [n.serialize() for n in self.posted_notes],
             "courses": [c.serialize_non_recursive() for c in self.courses]
         }
@@ -48,7 +53,10 @@ class User(db.Model):
     def serialize_non_recursive(self):
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "profile_image": self.profile_image,
+            "firebase_id": self.firebase_id,
+            "email": self.email
         }
 
     # TODO make simple serialize to avoid infinite loops
@@ -59,7 +67,7 @@ class Course(db.Model):
     Course class
     """
     __tablename__ = "course"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
@@ -104,7 +112,7 @@ class Note(db.Model):
     Notes class
     """
     __tablename__ = "note"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String, nullable=False)
     course_id = db.Column(db.Integer, db.ForeignKey(
         "course.id"), nullable=False)
