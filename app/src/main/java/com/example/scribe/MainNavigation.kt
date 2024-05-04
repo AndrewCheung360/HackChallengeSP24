@@ -1,5 +1,8 @@
 package com.example.scribe
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -10,7 +13,11 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -54,6 +61,7 @@ val screenList = listOf(
     BottomScreen.Profile
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainNavigation(
     navController: NavHostController,
@@ -78,7 +86,23 @@ fun MainNavigation(
         }
 
         composable(BottomScreen.Upload.route) {
+            val coroutineScope = rememberCoroutineScope()
+            val mimeTypeFilter = arrayOf("image/jpeg", "image/png", "image/gif", "image/jpg")
 
+            val selectProfileActivity = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) { /*...*/ }
+            val selectPhotoActivity = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenMultipleDocuments()) { /*...*/ }
+
+            val profileImageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
+            val photoImageBitmap = remember { mutableStateListOf<ImageBitmap>() }
+
+            FilePicker(
+                coroutineScope = coroutineScope,
+                mimeTypeFilter = mimeTypeFilter,
+                selectProfileActivity = selectProfileActivity,
+                selectPhotoActivity = selectPhotoActivity,
+                profileImageBitmap = profileImageBitmap,
+                photoImageBitmap = photoImageBitmap
+            )
         }
 
         composable(BottomScreen.Profile.route) {
