@@ -72,10 +72,10 @@ fun MainNavigation(
 )
 {
     val actions = remember(navController) { AppActions(navController) }
-
+// remember to set start to "signin"
     NavHost(
         navController = navController,
-        startDestination = "sign_in"
+        startDestination = "home"
     ) {
 
 
@@ -124,8 +124,13 @@ fun MainNavigation(
             )
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
-            CourseNotes(
-                courseId = arguments.getInt("courseId"))
+            Scaffold (bottomBar = {
+                BottomNavigationBar(navController)
+            }) {
+                CourseNotes(
+                    courseId = arguments.getInt("courseId"), viewModel = mainViewModel, selectedNote = actions.selectedNote)
+            }
+
         }
     }
 }
@@ -155,6 +160,10 @@ private class AppActions(
 ) {
     val selectedCourse: (Int) -> Unit = { courseId: Int ->
         navController.navigate("courses/$courseId")
+    }
+
+    val selectedNote: (Int, Int) -> Unit = { courseId: Int, noteId: Int ->
+        navController.navigate("courses/$courseId/notes/$noteId")
     }
 
     val toHome : () -> Unit = {
