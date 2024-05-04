@@ -31,7 +31,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 
 class MainActivity : ComponentActivity() {
 
-    private val dataViewModel : DataViewModel by viewModels()
+//    private val dataViewModel : DataViewModel by viewModels()
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +49,9 @@ class MainActivity : ComponentActivity() {
             val searchText by mainViewModel.searchText.collectAsState()
             val courses by mainViewModel.searchCourses.collectAsState()
 
-            val courseList by dataViewModel.courses.collectAsState()
-            val noteList by dataViewModel.notes.collectAsState()
-            val userList by dataViewModel.users.collectAsState()
+//            val courseList by dataViewModel.courses.collectAsState()
+//            val noteList by dataViewModel.notes.collectAsState()
+//            val userList by dataViewModel.users.collectAsState()
 
 
 
