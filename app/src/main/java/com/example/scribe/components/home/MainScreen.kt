@@ -5,23 +5,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.scribe.data.Course
+import com.example.scribe.viewmodel.MainViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun MainScreen(name : String,
-               avatar: String,
-               searchText: String,
-               courses: SnapshotStateList<Course>,
-               searchViewModel: SearchViewModel,
-               selectedCourse: (Int) -> Unit
+fun MainScreen(
+    name: String,
+    avatar: String,
+    searchText: String,
+    courses: StateFlow<List<Course>>,
+    mainViewModel: MainViewModel,
+    selectedCourse: (Int) -> Unit
 )
 {
-    val searchCourses by searchViewModel.course.collectAsState()
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp)) {
@@ -29,7 +28,7 @@ fun MainScreen(name : String,
 
         Spacer(modifier = Modifier.padding(8.dp))
 
-        SearchBar(searchText = searchText, courses = searchCourses, viewModel = searchViewModel)
+        SearchBar(searchText = searchText, viewModel = mainViewModel)
 
 //        Spacer(modifier = Modifier.padding(16.dp))
 

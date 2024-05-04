@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.scribe.components.home.SearchViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.scribe.ui.theme.ScribeTheme
@@ -23,9 +22,8 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
             val mainViewModel = viewModel<MainViewModel>()
-            val searchViewModel = viewModel<SearchViewModel>()
-            val searchText by searchViewModel.searchText.collectAsState()
-            val courses = mainViewModel.courses
+            val searchText by mainViewModel.searchText.collectAsState()
+            val courses = mainViewModel.userCourses
 
 
 
@@ -34,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold (bottomBar = { BottomNavigationBar(navController) }){
 
-                    MainNavigation(navController, name, avatar, searchText, courses, searchViewModel)
+                    MainNavigation(navController, name, avatar, searchText, courses, mainViewModel)
 
 
                 }

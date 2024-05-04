@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -21,8 +20,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.scribe.components.course.CourseNotes
 import com.example.scribe.components.home.MainScreen
-import com.example.scribe.components.home.SearchViewModel
 import com.example.scribe.data.Course
+import com.example.scribe.viewmodel.MainViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 sealed class  BottomScreen(
     val route: String,
@@ -55,11 +55,12 @@ val screenList = listOf(
 )
 
 @Composable
-fun MainNavigation(navController: NavHostController,
-                   name : String, avatar: String,
-                   searchText: String,
-                   courses: SnapshotStateList<Course>,
-                   searchViewModel: SearchViewModel
+fun MainNavigation(
+    navController: NavHostController,
+    name: String, avatar: String,
+    searchText: String,
+    courses: StateFlow<List<Course>>,
+    mainViewModel: MainViewModel
 )
 {
     val actions = remember(navController) { AppActions(navController) }
@@ -71,7 +72,7 @@ fun MainNavigation(navController: NavHostController,
 
         composable(BottomScreen.Home.route) {
 
-            MainScreen(name = name, avatar = avatar, searchText = searchText, courses = courses, searchViewModel = searchViewModel, selectedCourse = actions.selectedCourse)
+            MainScreen(name = name, avatar = avatar, searchText = searchText, courses = courses, mainViewModel = mainViewModel, selectedCourse = actions.selectedCourse)
 
 
         }

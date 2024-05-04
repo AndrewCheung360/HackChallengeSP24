@@ -6,28 +6,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scribe.data.Course
-import com.example.scribe.ui.theme.BlueEnd
-import com.example.scribe.ui.theme.BlueStart
-import com.example.scribe.ui.theme.GreenEnd
-import com.example.scribe.ui.theme.GreenStart
-import com.example.scribe.ui.theme.OrangeEnd
-import com.example.scribe.ui.theme.OrangeStart
-import com.example.scribe.ui.theme.PurpleEnd
-import com.example.scribe.ui.theme.PurpleStart
+import kotlinx.coroutines.flow.StateFlow
 
 
 @Composable
-fun CourseCardsSection(selectedCourse: (Int) -> Unit, courses: SnapshotStateList<Course>){
+fun CourseCardsSection(selectedCourse: (Int) -> Unit, courses: StateFlow<List<Course>>){
+    val userCourses = remember { courses.value }
     LazyColumn(modifier = androidx.compose.ui.Modifier.fillMaxWidth().padding(8.dp).padding(bottom = 40.dp)){
-        items(courses.size) { index ->
-            CourseCard(courses[index], selectedCourse)
+        items(courses.value.size) { index ->
+            CourseCard(userCourses[index], selectedCourse)
             Spacer(modifier = Modifier.height(4.dp))
         }
     }
