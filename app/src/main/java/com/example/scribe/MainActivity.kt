@@ -2,8 +2,10 @@ package com.example.scribe
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material3.Scaffold
@@ -16,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.scribe.navigation.BottomNavigationBar
 import com.example.scribe.navigation.MainNavigation
 import com.example.scribe.ui.theme.ScribeTheme
+import com.example.scribe.viewmodel.DataViewModel
 import com.example.scribe.viewmodel.MainViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import io.github.jan.supabase.createSupabaseClient
@@ -28,12 +31,14 @@ import io.github.jan.supabase.postgrest.Postgrest
 
 class MainActivity : ComponentActivity() {
 
+    private val dataViewModel : DataViewModel by viewModels()
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
 
             val mainViewModel = viewModel<MainViewModel>()
+
             val supabase = mainViewModel.supabase
             val user by mainViewModel.user.collectAsState()
             val name by mainViewModel.name.collectAsState()
@@ -43,6 +48,10 @@ class MainActivity : ComponentActivity() {
 
             val searchText by mainViewModel.searchText.collectAsState()
             val courses by mainViewModel.searchCourses.collectAsState()
+
+            val courseList by dataViewModel.courses.collectAsState()
+            val noteList by dataViewModel.notes.collectAsState()
+            val userList by dataViewModel.users.collectAsState()
 
 
 
