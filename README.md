@@ -31,7 +31,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/AndrewCheung360/Scribe">
-    <img src="https://github.com/AndrewCheung360/HackChallengeSP24/assets/67351739/bd1d5da6-452c-487f-a8e0-d05457850133" alt="Logo" width="200" height="200">
+    <img src="https://github.com/AndrewCheung360/HackChallengeSP24/assets/67351739/bd1d5da6-452c-487f-a8e0-d05457850133" alt="Logo" width="250" height="250">
   </a>
 
 <h1 align="center">Scribe</h1>
@@ -91,16 +91,22 @@ Cornell App Dev Hack Challenge Spring 2024
 ## Description
 Scribe is a mobile application designed to revolutionize the way students share and access lecture notes and study guides. Whether you're looking to catch up on missed lectures or enhance your understanding with supplementary materials, Scribe has you covered. Join Scribe today and embark on a journey of collaborative learning and academic excellence!
 ## Screenshots
-<div style="display: flex; justify-content: space-between">
+<div style="display: flex; flex-direction: row; justify-content: space-between">
 <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/6344c9c4-98eb-40cf-897a-7992f414a19e" width = "200"/>
+  <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/f1b01e87-5540-4c2a-b5d1-385eb7a4ae16" width = "200"/>
+</div>
+<hr/>
+<div>
+
   <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/84b59956-a3e2-4a92-8703-40ad68f12f3c" width = "200"/>)
   <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/85235d09-7c8b-4f7f-ac48-0654e4530684" width = "200"/>)
-  <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/7f844580-ce61-40b2-adc6-40feffbfbed1" width = "200"/>)
+
 </div>
 
 <hr/>
 
-<div style="display: flex; justify-content: space-between">
+<div style="display: flex; justify-content: space-around">
+    <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/7f844580-ce61-40b2-adc6-40feffbfbed1" width = "200"/>)
  <img src = "https://github.com/AndrewCheung360/Scribe/assets/67351739/d46901a3-9582-4b68-949f-54ec00708e82" width = "200"/>)
 </div>
  
