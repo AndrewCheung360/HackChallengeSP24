@@ -83,7 +83,7 @@ fun MainNavigation(
 // remember to set start to "signin"
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "sign_in"
     ) {
 
 

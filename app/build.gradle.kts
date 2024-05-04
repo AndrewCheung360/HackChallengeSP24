@@ -96,7 +96,13 @@ dependencies {
     implementation(platform("io.github.jan-tennert.supabase:bom:2.1.3"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:gotrue-kt")
-    implementation("io.ktor:ktor-client-android:2.3.8")
+    implementation("io.ktor:ktor-client-android:2.3.10")
+    implementation("io.ktor:ktor-client-core:2.3.10")
+    implementation ("io.ktor:ktor-client-json:2.3.10")
+    implementation ("io.ktor:ktor-client-serialization:2.3.10")
+    implementation ("io.ktor:ktor-client-logging:2.3.10")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.10")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
 
 
 }
