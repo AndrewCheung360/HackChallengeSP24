@@ -25,6 +25,11 @@ fun ProfileScreen(viewModel: MainViewModel, onSignOut: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "User Name: hi")
+        Text(text = "Number of Posts: 10")
+
+
+        Spacer(modifier = Modifier.height(16.dp))
         SignOutButton(viewModel = viewModel, onSignOut)
     }
 
