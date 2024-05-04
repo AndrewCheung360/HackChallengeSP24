@@ -1,6 +1,8 @@
 package com.example.scribe.navigation
 
-
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import android.annotation.SuppressLint
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -13,7 +15,11 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -21,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.scribe.FilePicker
 import com.example.scribe.components.auth.SignInScreen
 import com.example.scribe.components.course.CourseNotes
 import com.example.scribe.components.home.MainScreen
@@ -60,6 +67,7 @@ val screenList = listOf(
     BottomScreen.Profile
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainNavigation(
@@ -100,6 +108,23 @@ fun MainNavigation(
         }
 
         composable(BottomScreen.Upload.route) {
+            val coroutineScope = rememberCoroutineScope()
+            val mimeTypeFilter = arrayOf("image/jpeg", "image/png", "image/gif", "image/jpg")
+
+            val selectProfileActivity = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) { /*...*/ }
+            val selectPhotoActivity = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenMultipleDocuments()) { /*...*/ }
+
+            val profileImageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
+            val photoImageBitmap = remember { mutableStateListOf<ImageBitmap>() }
+
+            FilePicker(
+                coroutineScope = coroutineScope,
+                mimeTypeFilter = mimeTypeFilter,
+                selectProfileActivity = selectProfileActivity,
+                selectPhotoActivity = selectPhotoActivity,
+                profileImageBitmap = profileImageBitmap,
+                photoImageBitmap = photoImageBitmap
+            )
             Scaffold (bottomBar = {
                 BottomNavigationBar(navController)
             }) {

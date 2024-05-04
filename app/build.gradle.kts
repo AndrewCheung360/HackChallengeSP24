@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -49,6 +50,9 @@ android {
         }
     }
 }
+
+
+
 val ktor_version: String by project
 
 dependencies {
@@ -79,6 +83,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1")
     implementation("androidx.credentials:credentials:1.3.0-alpha03")
 
     // optional - needed for credentials support from play services, for devices running
@@ -91,5 +97,6 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:gotrue-kt")
     implementation("io.ktor:ktor-client-android:2.3.8")
+
 
 }

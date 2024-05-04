@@ -75,6 +75,9 @@ class MainViewModel: ViewModel() {
     private val _userCourses = MutableStateFlow<List<Course>>(emptyList())
     val userCourses = _userCourses.asStateFlow()
 
+    private val _message = MutableStateFlow("")
+    val message = _message.asStateFlow()
+
     private val courses = MutableStateFlow(allCourses)
     val searchCourses = searchText
             .combine(courses) { text, course ->
@@ -108,7 +111,12 @@ class MainViewModel: ViewModel() {
     fun addCourse(courseName: String) {
         val course = courses.value.find { it.courseName == courseName }
         if (course != null) {
+            if(_userCourses.value.contains(course)) {
+                _message.value = "You have already added this course"
+            } else {
             _userCourses.value += course
+            _message.value = "Course added successfully"
+            }
         }
     }
 
