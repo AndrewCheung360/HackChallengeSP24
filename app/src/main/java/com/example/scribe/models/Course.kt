@@ -1,4 +1,4 @@
-package com.example.scribe.data
+package com.example.scribe.models
 
 import androidx.compose.ui.graphics.Brush
 

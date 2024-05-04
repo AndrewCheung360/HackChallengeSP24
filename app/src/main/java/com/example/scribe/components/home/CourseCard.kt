@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.scribe.data.Course
+import com.example.scribe.models.Course
 
 @Composable
 fun CourseCard(course: Course, selectedCourse: (Int) -> Unit) {
