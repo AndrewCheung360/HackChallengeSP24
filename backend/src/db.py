@@ -21,7 +21,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     profile_image = db.Column(db.String, nullable=True)  # URL to profile image
-    firebase_id = db.Column(db.String, nullable=False)
+    supabase_id = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=True)
     posted_notes = db.relationship("Note", cascade="delete")
     courses = db.relationship(
@@ -33,7 +33,7 @@ class User(db.Model):
         """
         self.name = kwargs.get("name")
         self.profile_image = kwargs.get("profile_image")
-        self.firebase_id = kwargs.get("firebase_id")
+        self.supabase_id = kwargs.get("supabase_id")
         self.email = kwargs.get("email")
 
     def serialize(self):
@@ -43,20 +43,25 @@ class User(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "profile_image": self.profile_image,
-            "firebase_id": self.firebase_id,
+            "avatar": self.profile_image,
+            "supabaseId": self.supabase_id,
             "email": self.email,
-            "posted_notes": [n.serialize() for n in self.posted_notes],
-            "courses": [c.serialize_non_recursive() for c in self.courses]
+            # "postedNotes": [n.serialize_non_recursive() for n in self.posted_notes],
+            # "courses": [c.serialize_non_recursive() for c in self.courses]
+            "notes": [n.id for n in self.posted_notes],
+            "courses": [c.id for c in self.courses]
         }
 
     def serialize_non_recursive(self):
+        """
+        Serializes the user object such that it doesn't have the posted notes or courses
+        """
         return {
             "id": self.id,
             "name": self.name,
-            "profile_image": self.profile_image,
-            "firebase_id": self.firebase_id,
-            "email": self.email
+            "avatar": self.profile_image,
+            "supabaseId": self.supabase_id,
+            "email": self.email,
         }
 
     # TODO make simple serialize to avoid infinite loops
@@ -92,11 +97,16 @@ class Course(db.Model):
             "code": self.code,
             "name": self.name,
             "description": self.description,
-            "notes": [n.serialize() for n in self.notes],
-            "students": [s.serialize_non_recursive() for s in self.students]
+            # "notes": [n.serialize_non_recursive() for n in self.notes],
+            # "students": [s.serialize_non_recursive() for s in self.students]
+            "notes": [n.id for n in self.notes],
+            "students": [s.id for s in self.students]
         }
 
     def serialize_non_recursive(self):
+        """
+        Serialize the course object such that it doesn't contain the notes or students
+        """
         return {
             "id": self.id,
             "code": self.code,
@@ -135,6 +145,18 @@ class Note(db.Model):
             "title": self.title,
             "course": Course.query.filter_by(id=self.course_id).first().serialize_non_recursive(),
             "poster": User.query.filter_by(id=self.poster_id).first().serialize_non_recursive(),
+        }
+
+    def serialize_non_recursive(self):
+        """
+        Serializes the notes object such thtat it contains course_id and poster_id
+        rather than the course and poster
+        """
+        return {
+            "id": self.id,
+            "title": self.title,
+            "courseId": self.course_id,
+            "posterId": self.poster_id
         }
 
     # TODO make simple serialize to avoid infinite loops

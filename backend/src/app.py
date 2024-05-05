@@ -5,6 +5,8 @@ import os
 from flask import Flask, request, url_for, redirect, session, send_file
 import json
 from authlib.integrations.flask_client import OAuth
+import hashlib
+from dotenv import load_dotenv
 # import pyrebase
 
 app = Flask(__name__)
@@ -18,6 +20,8 @@ app.config["SQLALCHEMY_ECHO"] = True
 UPLOAD_FOLDER = "uploads"
 DOWNLOAD_FOLDER = "downloads"
 BUCKET = "hackchallengebucket"
+
+load_dotenv()
 
 db.init_app(app)
 with app.app_context():
@@ -38,6 +42,19 @@ def failure_response(message, code=404):
 def hello_world():
     email = dict(session).get('email', None)
     return f'Hello {email}!'
+
+
+def hash_password(password: str):
+    """
+    Given a string 'password', returns the password after salting and iterative hashing
+    Requires 'password' is a string
+    """
+    salt = os.environ.get("SALT")
+    iterations = int(os.environ.get("ITERATIONS"))
+    hashed_password = hashlib.pbkdf2_hmac(
+        'sha384', password.encode(), salt.encode(), iterations)
+    print(hash_password)
+    return hashed_password
 
 # Users routes ---------------------------------------------------------------
 
@@ -60,22 +77,49 @@ def create_a_user():
         - "name" or "firebase_id" values not strings
     """
     body = json.loads(request.data)
-    name, profile_image, firebase_id, email,  = body.get("name"), body.get(
-        "profile_image"), body.get("firebase_id"), body.get("email")
+    name, profile_image, supabase_id, email = body.get("name"), body.get(
+        "profile_image"), body.get("supabase_id"), body.get("email")
     # Data validation
-    if name is None or firebase_id is None:
-        return failure_response("request body missing 'name' or 'firebase_id' fields", 400)
-    if not isinstance(name, str) or not isinstance(firebase_id, str):
-        return failure_response("'name' or 'firebase_id' values not strings", 400)
+    if name is None or supabase_id is None:
+        return failure_response("request body missing 'name' or 'supabase_id' fields", 400)
+    if not isinstance(name, str) or not isinstance(supabase_id, str):
+        return failure_response("'name' or 'supabase_id' values not strings", 400)
     # check if user already in firebase
-    user = User.query.filter_by(firebase_id=firebase_id).first()
+    user = User.query.filter_by(supabase_id=supabase_id).first()
     if user is not None:
         return success_response({"Alert": "user with 'firebase_id' already in database"})
     new_user = User(name=name, profile_image=profile_image,
-                    firebase_id=firebase_id, email=email)
+                    supabase_id=supabase_id, email=email)
     db.session.add(new_user)
     db.session.commit()
     return success_response(new_user.serialize(), 201)
+
+
+# @app.route("/users/login/", methods=["POST"])
+# def verify_login():
+#     """
+#     Endpoint for verifying a user's login
+#     Returns 400 error response if
+#         - request body missing "name" or "password" fields
+#     Returns 403 error response if
+#         - 'password' is not the correct password for the user with 'name'
+#     Returns 404 error response if
+#         - User with 'name' not in found in the database
+#     """
+#     body = json.loads(request.data)
+#     name = body.get("name")
+#     password = body.get("password")
+#     if name is None or password is None:
+#         return failure_response("request body missing 'name' or 'password' fields", 400)
+#     if not isinstance(name, str) or not isinstance(password, str):
+#         return failure_response("'name' and 'password' values must be strings", 400)
+#     user = User.query.filter_by(name=name).first()
+#     if user is None:
+#         return failure_response("User not found")
+#     hashed_password = hash_password(password)
+#     if user.password == hashed_password:
+#         return success_response(user.serialize_non_recursive())
+#     return failure_response("Password is incorrect", 403)
 
 
 @app.route("/users/<int:user_id>/")
@@ -90,25 +134,29 @@ def get_specific_user(user_id):
     return success_response(user.serialize())
 
 
-@app.route("/users/firebase/", methods=["POST"])
-def get_user_by_firebase_id():
+@app.route("/users/supabase/")
+def get_user_by_supabase_id():
     """
-    Endpoint for getting a user by their firebase id
-    Returns 400 error response if:
-        - 'firebase_id' field missing from request body
-        - 'firebase_id' value is not string
-    Returs 404 error response if user with 'firebase_id' not found
+    Endpoint for getting a user by their supabase id
+    Returs 404 error response if user with 'supabase_id' not found
     """
-    body = json.loads(request.data)
-    firebase_id = body.get("firebase_id")
-    if firebase_id is None:
-        return failure_response("'firebase_id' field missing from request body")
-    if not isinstance(firebase_id, str):
-        return failure_response("'firebase_id' value must be string")
-    user = User.query.filter_by(firebase_id=firebase_id).first()
+    supabase_id = request.args.get("supabase_id")
+    user = User.query.filter_by(supabase_id=supabase_id).first()
     if user is None:
         return failure_response("User not found")
     return success_response(user.serialize())
+
+
+@app.route("/users/course/<int:course_id>/")
+def get_users_by_course_id(course_id):
+    """
+    Endpoint for getting users by their course id
+    Returns 404 error response if course with 'course_id' not found
+    """
+    course = Course.query.filter_by(id=course_id).first()
+    if course is None:
+        return failure_response("Course not found")
+    return success_response({"students": course.serialize().get("students")})
 
 
 @app.route("/users/<int:user_id>/", methods=["POST"])
@@ -125,7 +173,7 @@ def update_user(user_id):
     user.name = body.get("name", user.name)
     user.profile_image = body.get("profile_image", user.profile_image)
     db.session.commit()
-    return success_response(user.serialize_non_recursive())
+    return success_response(user.serialize())
 
 
 @app.route("/users/<int:user_id>/", methods=["DELETE"])
@@ -173,7 +221,7 @@ def add_user_to_course(course_id):
     course.students.append(user)
     # user.courses.append(course)
     db.session.commit()
-    return success_response(user.serialize())
+    return success_response(course.serialize())
 
 
 @app.route("/courses/<int:course_id>/drop/", methods=["POST"])
@@ -203,7 +251,7 @@ def drop_user_from_course(course_id):
         if user_id in s.values():
             course.students.pop(i)
             db.session.commit()
-            return success_response(user.serialize())
+            return success_response(course.serialize())
     return failure_response("unable to remove user from course (not supposed to happen)")
 
 
@@ -300,7 +348,7 @@ def get_all_notes():
     """
     Endpoint that gets all the notes in the database
     """
-    return success_response({"notes": [n.serialize() for n in Note.query.all()]})
+    return success_response({"notes": [n.serialize_non_recursive() for n in Note.query.all()]})
 
 
 @app.route("/notes/course/<int:course_id>/")
@@ -313,6 +361,17 @@ def get_notes_in_course(course_id):
     if course is None:
         return failure_response("Course with 'course_id' not found")
     return success_response({"notes": course.serialize().get("notes")})
+
+
+@app.route("/notes/user/<int:user_id>/")
+def get_notes_by_user(user_id):
+    """
+    Endpoint that gets all the notes that are uploaded by user with 'user_id'
+    """
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return failure_response("User with 'user_id' not found")
+    return success_response({"notes": user.serialize().get("notes")})
 
 
 @app.route("/notes/<int:note_id>/", methods=['GET'])
@@ -341,27 +400,7 @@ def get_note_json(note_id):
     note = Note.query.filter_by(id=note_id).first()
     if note is None:
         return failure_response("note not found!")
-    return success_response(note.serialize())
-
-# OAuth Login and Authorize Routes -------------------------------------------
-
-# @app.route('/login/', methods=["POST"])
-# def login():
-#     body = json.loads(request.data)
-#     email = body.get("email")
-#     password = body.get("password")
-#     try:
-#         user = auth.sign_in_with_email_and_password(email, password)
-#         session["user"] = email
-#     except:
-#         return failure_response("failed to login", 200)
-
-#     return success_response({"email": email, "password": password})
-
-# @app.route('/logout/')
-# def logout():
-#     session.pop("user")
-#     return redirect('/')
+    return success_response(note.serialize_non_recursive())
 
 
 if __name__ == "__main__":

@@ -3,6 +3,10 @@ import json
 import os
 
 
+local_host = "http://127.0.0.1:8000"
+deployed_route = "http://34.48.67.43"
+
+
 def grab_json(url):
     return json.loads(requests.get(url).text)
 
@@ -76,8 +80,6 @@ def add_courses_to_db(course_list):
     Requires courses to be in serialized using serialize_courses.
     ONLY RUN ONCE TO PREVENT COURSES TABLE FROM HAVING DUPLICATE COURSES
     """
-    local_host = "http://127.0.0.1:8000"
-    deployed_route = "http://34.48.67.43"
     for c in course_list:
         r = requests.post(local_host+"/courses/",
                           data=json.dumps({
@@ -93,6 +95,11 @@ def add_courses_to_db(course_list):
 # store_courses(course_list)
 
 # load courses
-courses = serialize_courses(load_courses_from_file())
-add_courses_to_db(courses)
+# courses = serialize_courses(load_courses_from_file())
+# add_courses_to_db(courses)
 # print(courses)
+
+res = requests.get(local_host+"/notes/1/")
+print(res.status_code)
+print(res.headers)
+print(res.content)
